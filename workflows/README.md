@@ -1,4 +1,4 @@
-# ⚙️ Dynatrace Workflow Examples
+# ⚙️ Dynatrace Workflow examples
 
 Welcome to the **Dynatrace workflow examples** folder!
 This space is dedicated to sharing, exploring, and contributing **real-world workflow configurations** built with Dynatrace.
