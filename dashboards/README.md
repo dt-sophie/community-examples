@@ -17,10 +17,7 @@ To get started with Dynatrace dashboards, check out the [app spotlight](https://
 To try the examples shared here, simply upload them to your own environment. 
 Don't have an account or environment yet? [Sign up](https://www.dynatrace.com/signup/playground/) and start experimenting in the Dynatrace [playground](https://playground.apps.dynatrace.com/) instead.
 
-## License
-[Apache License v2.0](https://github.com/Dynatrace/community-examples/blob/main/LICENSE.txt)).
-
-## How to contribute?
+## 🌱 How to contribute?
 
 To contribute, follow these steps:
 1. Submit a Pull Request: All contributions must be made via a pull request. 
@@ -40,3 +37,6 @@ By adhering to these guidelines, you’ll help create dashboards that are both u
 ## Looking for more examples?
 
 Looking for more inspiration? Check out Dynatrace's [Ready-made dashboards](https://docs.dynatrace.com/docs/analyze-explore-automate/dashboards-and-notebooks/ready-made-documents/ready-made-dashboards) available directly in the Dashboards app. 
+
+## License
+[Apache License v2.0](https://github.com/Dynatrace/community-examples/blob/main/LICENSE.txt)).
