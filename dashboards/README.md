@@ -26,11 +26,10 @@ To contribute, follow these steps:
 ### Contribution tips
 * Use Descriptive Titles: Include a clear and concise name, title, and short introduction for your dashboard.
 * Focus on Immediate Value: Ensure the dashboard provides immediate value and demonstrates the power and simplicity of Dynatrace.
-* Follow Best Practices:
-** Avoid errors and configure settings correctly.
-** Use responsive layouts and WCAG-compliant colors.
-** Include relevant data above the fold for better usability.
-** Start from an Example: Use existing dashboards as a reference to align with quality standards and best practices.
+* Avoid errors and configure settings correctly.
+* Use responsive layouts and WCAG-compliant colors.
+* Include relevant data above the fold for better usability.
+* Start from an Example: Use existing dashboards as a reference to align with quality standards and best practices.
 
 By adhering to these guidelines, you’ll help create dashboards that are both useful and inspiring for the Dynatrace community.
 
