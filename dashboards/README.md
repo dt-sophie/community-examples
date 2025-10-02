@@ -39,4 +39,4 @@ By adhering to these guidelines, you’ll help create dashboards that are both u
 Looking for more inspiration? Check out Dynatrace's [Ready-made dashboards](https://docs.dynatrace.com/docs/analyze-explore-automate/dashboards-and-notebooks/ready-made-documents/ready-made-dashboards) available directly in the Dashboards app. 
 
 ## License
-[Apache License v2.0](https://github.com/Dynatrace/community-examples/blob/main/LICENSE.txt)).
+[Apache License v2.0](https://github.com/Dynatrace/community-examples/blob/main/LICENSE.txt).
