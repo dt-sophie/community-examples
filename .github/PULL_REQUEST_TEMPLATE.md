@@ -10,7 +10,12 @@
 - [ ] Added new examples for: `<feature/usage/scenario>`
 - [ ] Adapted existing examples to improve clarity, usability, or alignment with best practices.
 
-## Contribution Tips Checklist
+## Contribution checklist
+
+### For configuration-as-code examples
+- [ ] **TBD**
+
+### For dashboards examples
 <!-- Ensure the following tips are followed before submitting -->
 - [ ] **Use Descriptive Titles**: For your example, include a clear and concise name, title, and short introduction.
 - [ ] **Focus on Immediate Value**: Ensure the example provides immediate value, such as showing key information upfront (e.g., KPIs), followed by details like charts or tables.
@@ -18,6 +23,9 @@
 - [ ] **Responsive and Accessible**: Use responsive layouts and WCAG-compliant colors for accessibility.
 - [ ] **Relevant Data Above the Fold**: For better usability, place the most relevant data at the top.
 - [ ] **Start from an Example**: Use existing dashboards or examples as a reference to align with quality standards and best practices.
+
+### For workflow examples
+- [ ] **TBD**
 
 ## Screenshots
 <!-- Add screenshots to show the new examples -->
