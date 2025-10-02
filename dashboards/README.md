@@ -29,7 +29,7 @@ To contribute, follow these steps:
 * Avoid errors and configure settings correctly.
 * Use responsive layouts and WCAG-compliant colors.
 * Include relevant data above the fold for better usability.
-* Start from an Example: Use existing dashboards as a reference to align with quality standards and best practices.
+* Start from an Example: Use existing, [ready-made dashboards](https://docs.dynatrace.com/docs/analyze-explore-automate/dashboards-and-notebooks/ready-made-documents/ready-made-dashboards) as a reference to align with quality standards and best practices. 
 
 By adhering to these guidelines, you’ll help create dashboards that are both useful and inspiring for the Dynatrace community.
 
