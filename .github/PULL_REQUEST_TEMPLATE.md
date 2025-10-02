@@ -2,13 +2,15 @@
 
 ## Description
 <!-- Briefly describe the purpose of this PR -->
-- [ ] What example(s) are being added or adapted?
-- [ ] Why are these examples useful?
+
+// What example(s) are being added or adapted?
+
+// Why are these examples useful?
 
 ## Changes Made
 <!-- Summarize the key changes in this PR -->
-- [ ] Added new examples for: `<feature/usage/scenario>`
-- [ ] Adapted existing examples to improve clarity, usability, or alignment with best practices.
+- Added new examples for: `xyz`
+- Adapted existing examples `xyz` to improve clarity, usability, or alignment with best practices.
 
 ## Contribution checklist
 
