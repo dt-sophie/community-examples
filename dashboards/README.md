@@ -25,7 +25,7 @@ To contribute, follow these steps:
 
 ### Contribution tips
 * Use Descriptive Titles: Include a clear and concise name, title, and short introduction for your dashboard.
-* Focus on Immediate Value: Ensure the dashboard provides immediate value and demonstrates the power and simplicity of Dynatrace.
+* Focus on Immediate Value: Ensure the dashboard provides immediate value (for example, showing important KPIs on top) and then break it down to the details (tables, charts over time, etc). 
 * Avoid errors and configure settings correctly.
 * Use responsive layouts and WCAG-compliant colors.
 * Include relevant data above the fold for better usability.
