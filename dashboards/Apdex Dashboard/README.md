@@ -1,4 +1,4 @@
- # 🧩 Apdex Dashboard
+ # Apdex Dashboard
 
 This dashboard provides insights into **service performance and user satisfaction** using the **Apdex (Application Performance Index)** metric, built with Dynatrace Dashboards.
 
