@@ -28,7 +28,7 @@ Don't have an account or environment yet? [Sign up](https://www.dynatrace.com/si
 2. **Review Process**: Pull requests will be reviewed by project owners and a selected group of Dynatrace experts to ensure quality and consistency.
 
 ### Contribution tips
-- **Use descriptive titles:** Include a clear and concise name, title, and short introduction for your dashboard.  
+- **Use descriptive titles:** Include a clear and concise name and title. Include a description of your dashboard in the README file. 
 - **Focus on immediate value:** Ensure the dashboard provides quick insights (e.g., key KPIs on top) before diving into details such as tables or time-series charts.  
 - **Avoid errors:** Verify all configurations and references work as expected.  
 - **Use responsive layouts** and **WCAG-compliant colors** for accessibility.  
