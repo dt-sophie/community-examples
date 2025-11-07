@@ -1,7 +1,8 @@
-# 🧩 Apdex Dashboard
+ # 🧩 Apdex Dashboard
 
-Welcome to the **Apdex Dashboard** example!  
 This dashboard provides insights into **service performance and user satisfaction** using the **Apdex (Application Performance Index)** metric, built with Dynatrace Dashboards.
+
+#<img width="1919" height="1079" alt="Screenshot 1" src="https://github.com/user-attachments/assets/a0cf2c41-4fff-4ffa-8f20-5b17f97d6469" />
 
 ## 🎯 Purpose
 
@@ -24,7 +25,7 @@ You can also use the **Service filter** at the top to focus on individual servic
 
 Follow these steps to import and use the dashboard in your Dynatrace environment:
 
-1. **Download** the `HipsterShop Apdex Dashboard.json` file from this repository.  
+1. **Download** the `Apdex Dashboard.json` file from this repository.  
 2. In Dynatrace, open the **Dashboards app**.  
 3. Click **Import dashboard** and upload the JSON file.  
 4. Once imported, review and adjust:
