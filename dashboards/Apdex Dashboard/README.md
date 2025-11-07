@@ -1,6 +1,6 @@
 # 🧩 Apdex Dashboard
 
-Welcome to the **HipsterShop Apdex Dashboard** example!  
+Welcome to the **Apdex Dashboard** example!  
 This dashboard provides insights into **service performance and user satisfaction** using the **Apdex (Application Performance Index)** metric, built with Dynatrace Dashboards.
 
 ## 🎯 Purpose
