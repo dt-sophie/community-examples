@@ -22,3 +22,10 @@ The repository is organized into subfolders for different areas of Dynatrace con
 - *(and more to come!)*  
 
 Each folder includes its own README with detailed guidance and usage instructions for the examples inside.
+
+# 📄 License
+
+This repository is licensed under the **Apache License, Version 2.0**.
+
+You may obtain a copy of the License at:
+[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
