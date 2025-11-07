@@ -19,7 +19,7 @@ This dashboard includes several visual tiles to help interpret service performan
 - **Apdex Over Time (Line Chart)** – trend visualization of Apdex changes across time.  
 - **Apdex History by Category (Bar Charts)** – shows the number and percentage of requests in each satisfaction category.  
 
-You can also use the **Service filter** at the top to focus on individual services within the HipsterShop environment.
+You can also use the **Service filter** at the top to focus on individual services within your environment.
 
 ## ⚙️ Getting Started
 
