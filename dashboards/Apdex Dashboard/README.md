@@ -6,7 +6,7 @@ This dashboard provides insights into **service performance and user satisfactio
 
 ## 🎯 Purpose
 
-The dashboard helps you quickly understand **how well services perform from an end-user perspective** within the HipsterShop application.  
+The dashboard helps you quickly understand **how well services perform from an end-user perspective** within your application.  
 It categorizes requests into **Satisfied**, **Tolerating**, or **Frustrated** groups and visualizes Apdex trends over time.
 
 ## 📊 What You’ll See
