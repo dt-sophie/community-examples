@@ -1,4 +1,4 @@
-# ⚙️ Dynatrace Configuration-as-Code examples
+# ⚙️ Community Examples: Configuration-as-Code
 
 Welcome to the **Dynatrace configuration-as-code examples** folder!
 This space is dedicated to sharing, exploring, and contributing **real-world configuration-as-code samples** built with Dynatrace.
