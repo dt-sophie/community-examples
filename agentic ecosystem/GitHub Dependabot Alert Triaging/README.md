@@ -11,11 +11,11 @@ Key features:
 - Automated fixes for confirmed vulnerabilities.
 - Human-in-the-loop reviews ensure every automated remediation meets your organization’s standards.
 
-Scenario 1: GitHub-based workflow
-![GitHub-based workflow](images/scenario 1.png)
+**Scenario 1: GitHub-based workflow**
+![GitHub-based workflow](images/scenario1.png)
 
-Scenario 2: Dynatrace-driven workflow
-![Dynatrace-driven workflow](images/scenario 2.png)
+**Scenario 2: Dynatrace-driven workflow**
+![Dynatrace-driven workflow](images/scenario2.png)
 
 **Learn more and follow step-by-step instructions in the official documentation:**  
 [Automate vulnerability remediation with GitHub Copilot and Dynatrace](https://docs.dynatrace.com/docs/secure/use-cases/ai-remediation-github-copilot)
