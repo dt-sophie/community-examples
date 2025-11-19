@@ -1,0 +1,136 @@
+metadata:
+  version: '1'
+  dependencies:
+    apps:
+      - id: dynatrace.automations
+        version: ^1.2279.4
+  inputs: []
+workflow:
+  title: Create GitHub issue and assign to CoPilot (http) [sub-workflow]
+  tasks:
+    get-repo-id:
+      name: get-repo-id
+      description: Issue an HTTP request to any API.
+      action: dynatrace.automations:http-function
+      active: true
+      input:
+        url: https://api.github.com/graphql
+        method: POST
+        headers:
+          Accept: application/vnd.github+json
+          Content-Type: application/json
+        payload: >-
+          {
+            "query": "query { repository(owner: \"{{input()["owner"] }}\", name: \"{{input()["repository"] }}\") { id } }"
+          }
+        credential:
+          type: token
+          tokenPrefix: Bearer
+          credentialId: TO-SET-UP-VAULT-CREDS
+        failOnResponseCodes: 400-599
+      position:
+        x: 1
+        y: 1
+      predecessors: []
+    get-copilot-bot-id:
+      name: get-copilot-bot-id
+      description: Run custom JavaScript code.
+      action: dynatrace.automations:run-javascript
+      input:
+        script: >-
+          // optional import of sdk modules
+
+          import { execution } from '@dynatrace-sdk/automation-utils';
+
+
+          export default async function ({ execution_id }) {
+            // Access previous action's output
+            const ex = await execution(execution_id);
+            const prevOutput = await ex.result('get-assignable-users');
+            // Find the node with login "copilot-swe-agent"
+            const body = JSON.parse(prevOutput.body);
+            console.log("Body: " + body["data"]);
+            const copilot = body["data"]["repository"]["suggestedActors"]["nodes"]
+              .find((node) => node.login === "copilot-swe-agent");
+            // Return the id or null if not found
+            return { copilotId: copilot ? copilot.id : null };
+          }
+      position:
+        x: 0
+        y: 2
+      predecessors:
+        - get-assignable-users
+      conditions:
+        states:
+          get-assignable-users: OK
+    get-assignable-users:
+      name: get-assignable-users
+      description: Issue an HTTP request to any API.
+      action: dynatrace.automations:http-function
+      input:
+        url: https://api.github.com/graphql
+        method: POST
+        headers:
+          Accept: application/vnd.github+json
+          Content-Type: application/json
+        payload: >-
+          {
+              "query":"query { repository(owner: \"{{input()["owner"]}}\", name: \"{{input()["repository"] }}\") { suggestedActors(capabilities: [CAN_BE_ASSIGNED], first: 100) { nodes { login __typename ... on Bot { id } ... on User { id } } } } }"
+          }
+        credential:
+          type: token
+          tokenPrefix: Bearer
+          credentialId: TO-SET-UP-VAULT-CREDS
+        failOnResponseCodes: 400-599
+      position:
+        x: 0
+        y: 1
+      predecessors: []
+    create-github-issue-http:
+      name: create-github-issue-http
+      description: Issue an HTTP request to any API.
+      action: dynatrace.automations:http-function
+      active: true
+      input:
+        url: https://api.github.com/graphql
+        method: POST
+        headers:
+          Accept: application/vnd.github+json
+          Content-Type: application/json
+        payload: >-
+          {
+            "query": "mutation createIssue($repositoryId:ID!, $title:String!, $body:String!, $assigneeIds:[ID!]!) { createIssue(input: {repositoryId: $repositoryId, title: $title, body: $body, assigneeIds: $assigneeIds}) { issue { id number url } } }",
+            "variables": {
+              "assigneeIds": ["{{result("get-copilot-bot-id").copilotId}}"],
+              "repositoryId": "{{ (result("get-repo-id")["body"] | from_json)['data']['repository']['id']}}",
+              "title": "{{input()["title"]}}",
+              "body": {{input()["content"] | tojson}}
+            }
+          }
+        credential:
+          type: token
+          tokenPrefix: Bearer
+          credentialId: TO-SET-UP-VAULT-CREDS
+        failOnResponseCodes: 400-599
+      position:
+        x: 0
+        y: 3
+      predecessors:
+        - get-copilot-bot-id
+        - get-repo-id
+      conditions:
+        states:
+          get-repo-id: OK
+          get-copilot-bot-id: OK
+  description: ''
+  trigger: {}
+  schemaVersion: 3
+  result: null
+  input:
+    owner: appsec-ai-initiative-dev
+    title: Sample title for GitHub issue
+    content: This is a verified Dependabot alert, confirmed to be exposed in runtime
+      by Dynatrace
+    repository: unguard
+  hourlyExecutionLimit: 1000
+  type: STANDARD
