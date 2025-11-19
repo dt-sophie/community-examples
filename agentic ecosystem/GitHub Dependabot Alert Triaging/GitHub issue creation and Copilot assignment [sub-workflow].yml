@@ -6,7 +6,7 @@ metadata:
         version: ^1.2279.4
   inputs: []
 workflow:
-  title: Create GitHub issue and assign to CoPilot (http) [sub-workflow]
+  title: GitHub issue creation and Copilot assignment [sub-workflow]
   tasks:
     get-repo-id:
       name: get-repo-id
