@@ -18,7 +18,7 @@ The repository is organized into subfolders for different areas of Dynatrace con
 
 - **Dashboards** – ready-to-use dashboard examples for various use cases  
 - **Config as Code** – examples for automating configuration management  
-- **Workflows** – community-created workflow templates  
+- **AI Ecosystem** – get started quickly on your Agentic AI use cases  
 - *(and more to come!)*  
 
 Each folder includes its own README with detailed guidance and usage instructions for the examples inside.
