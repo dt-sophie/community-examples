@@ -1,5 +1,5 @@
 metadata:
-  version: '1'
+  version: "1"
   dependencies:
     apps:
       - id: dynatrace.automations
@@ -25,22 +25,22 @@ workflow:
           a matching software component.
 
           b) the corresponding CVEs are confirmed by the Dynatrace Runtime
-          Vulnerability Analytics (RVA) with matching vulnerability findings.
+          Vulnerability Analytics (RVA) with amatching vulnerability findings.
 
 
-          Generate a summary in markdown format that includes:
+          Generate a summary in a markdown format that would include:
 
           * Copilot instructions:
 
           "Based on the confirmation status act on the Dependabot alerts - for
-          the confirmed ones, apply the fixes. Not confirmed alerts should be
+          the confirmed ones, apply the fixes. Not confimed alerts should be
           dismissed."
 
           * Summary per each vulnerable library:
 
-          ** The details of the original Dependabot alert including its ID.
+          ** The details of the original Dependabot alerts including it's ID.
 
-          **  Runtime context from the monitored software component and its
+          **  Runtime context from the monitored software component and it's
           related entities.
 
           ** Status whether the vulnerable library is confirmed with the
@@ -65,7 +65,7 @@ workflow:
 
           ## Output instructions
 
-          Output the text as a one-line JSON string, properly escaped so that it
+          Output the text as a one line JSON string, properly escaped so that it
           will be possible to assign it to be a JSON value. 
 
           For example: "# Dependabot Alert Verification Summary\n\n## Original
@@ -105,7 +105,7 @@ workflow:
       action: dynatrace.automations:execute-dql-query
       input:
         query: >-
-          fetch security.events, from:now()-2h
+          fetch security.events, from:now()-7d
 
           | filter event.type=="VULNERABILITY_FINDING"
 
@@ -118,7 +118,7 @@ workflow:
             finding.time.created=takeMax(toTimestamp(finding.time.created)), 
             finding.ids=collectDistinct(finding.id),
             CVEs=arrayDistinct(arrayFlatten(collectDistinct(vulnerability.references.cve)))
-          }
+          } 
       position:
         x: 0
         y: 1
@@ -146,9 +146,8 @@ workflow:
 
           | join [
             fetch dt.entity.container_group_instance
-            | fieldsAdd artifact.repository="appsec-ai-initiative-dev/unguard"
             | fieldsAdd containerImageName, workload.id=belongs_to[dt.entity.cloud_application]
-            | filter contains(containerImageName,artifact.repository)
+            | filter contains(containerImageName,"{{_.vulnerable_component["artifact.repository"]}}")
           ], on:{left[workload.id]==right[workload.id]},
           fields:{container.id=id, container.name=entity.name,
           container.image.name=containerImageName}
@@ -189,7 +188,7 @@ workflow:
       name: create-and-assign-github-issue
       description: Modularize your workflows, run any existing workflow.
       action: dynatrace.automations:run-workflow
-      active: true
+      active: false
       input:
         workflowId: 59468958-8b94-4cf5-a8cf-cce256cc54ef
         workflowInput: >-
@@ -240,15 +239,15 @@ workflow:
       concurrency: 3
       withItems: vulnerable_component in
         {{result("get-latest-dependabot-alerts").records}}
-  description: ''
+  description: ""
   trigger:
     schedule:
       rule: null
       trigger:
         type: interval
-        intervalMinutes: 60
+        intervalMinutes: 180
       timezone: Europe/Vienna
-      isActive: true
+      isActive: false
       isFaulty: false
       filterParameters:
         earliestStart: 2025-11-12
@@ -258,4 +257,5 @@ workflow:
   result: null
   input: {}
   hourlyExecutionLimit: 1000
+  guide: null
   type: STANDARD
