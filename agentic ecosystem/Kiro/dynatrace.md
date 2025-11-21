@@ -2,8 +2,6 @@
 
 ## Overview
 
-Components of this repository are deployed to a Kubernetes Cluster and monitored by Dynatrace.
-
 ## Dynatrace MCP Server Capabilities
 
 | Category | Key Functions | Primary Use Cases |
