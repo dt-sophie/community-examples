@@ -1,6 +1,6 @@
 # Kiro Agent Instructions for Dynatrace
 
-This folder contains the `dynatrace-instructions.md` steering file, designed to enable the Kiro agent to interact seamlessly with your Dynatrace environment.
+This folder contains the `dynatrace.md` steering file, designed to enable the Kiro agent to interact seamlessly with your Dynatrace environment.
 
 ## Overview
 
