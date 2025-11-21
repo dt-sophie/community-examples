@@ -32,7 +32,7 @@ The instructions cover a broad spectrum of monitoring and troubleshooting scenar
 To use this steering file with Kiro:
 
 1.  **Download:** Download the `dynatrace.md` file.
-2.  **Install:** Place the file in your Kiro `instruction-files` directory or import it via the agent configuration.
+2.  **Install:** Place the file in your Kiro `steering` directory (.kiro/steering) or import it via the agent configuration.
 3.  **Interact:** Ask Kiro questions such as:
     *   *"Investigate the slow response times on the checkout service."*
     *   *"Show me the most frequent error logs in production for the last hour."*
