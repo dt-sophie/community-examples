@@ -2,7 +2,10 @@
 
 This dashboard focuses on a business observability use case, visualizing the performance and status of an insurance claims process. 
 
-<img width="1919" height="1079" alt="Screenshot 1" src="https://github.com/user-attachments/assets/a0cf2c41-4fff-4ffa-8f20-5b17f97d6469" />
+<img width="1919" height="1079" alt="Screenshot 1" src="https://github.com/Dynatrace/community-examples/blob/main/dashboards/Insurance%20Claims%20Processing/Screenshot%20-%20insurance%20claims%20processing.png" />
+
+https://raw.githubusercontent.com/Dynatrace/community-examples/refs/heads/main/dashboards/Insurance%20Claims%20Processing/Screenshot%20-%20insurance%20claims%20processing.png
+
 
 ## 🎯 Purpose
 
