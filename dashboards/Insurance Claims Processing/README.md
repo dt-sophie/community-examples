@@ -6,8 +6,7 @@ This dashboard focuses on a business observability use case, visualizing the per
 
 ## 🎯 Purpose
 
-The dashboard helps you quickly understand **how well services perform from an end-user perspective** within your application.  
-It categorizes requests into **Satisfied**, **Tolerating**, or **Frustrated** groups and visualizes Apdex trends over time.
+<Lorem Ipsum/>
 
 ## 📊 What You’ll See
 
