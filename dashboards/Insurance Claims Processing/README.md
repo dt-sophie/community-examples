@@ -20,7 +20,11 @@ This dashboard includes different types of tiles to help interpret service perfo
 
 Follow these steps to import and use the dashboard in your Dynatrace environment:
 
-1. **Download** the `Dashboard - incurance claims processing.json` file from this repository.  
+1. **Download** the `Dashboard - insurance claims processing.json` file from this repository.  
 2. In Dynatrace, open the **Dashboards app**.  
 3. Click **Import dashboard** and upload the JSON file.
 4. Once imported, review and adjust: <Lorem Ipsum/>
+
+## ℹ️ Please note
+Support: This dashboard is provided by the Dynatrace community and is not officially supported by Dynatrace. If you have questions or encounter an issue regarding this example, please open a GitHub issue.
+License: this content is provided under the Apache License v2.0
