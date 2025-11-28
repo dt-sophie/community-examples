@@ -2,7 +2,7 @@
 
 This dashboard focuses on a business observability use case, visualizing the performance and status of an insurance claims process. 
 
-#<img width="1919" height="1079" alt="Screenshot 1" src="https://github.com/user-attachments/assets/a0cf2c41-4fff-4ffa-8f20-5b17f97d6469" />
+<img width="1919" height="1079" alt="Screenshot 1" src="https://github.com/user-attachments/assets/a0cf2c41-4fff-4ffa-8f20-5b17f97d6469" />
 
 ## 🎯 Purpose
 
