@@ -26,5 +26,5 @@ Follow these steps to import and use the dashboard in your Dynatrace environment
 4. Once imported, review and adjust: <Lorem Ipsum/>
 
 ## ℹ️ Please note
-Support: This dashboard is provided by the Dynatrace community and is not officially supported by Dynatrace. If you have questions or encounter an issue regarding this example, please open a GitHub issue.
-License: this content is provided under the Apache License v2.0
+**Support:** This dashboard is provided by the Dynatrace community and is not officially supported by Dynatrace. If you have questions or encounter an issue regarding this example, please open a GitHub issue.
+**License:** this content is provided under the Apache License v2.0
