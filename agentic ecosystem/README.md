@@ -1,4 +1,4 @@
-# ⚙️Community Examples: Agentic Ecoystem
+# ⚙️Community Examples: Agentic Ecosystem
 
 Welcome to the Dynatrace Agentic Ecosystem examples folder! This space is dedicated to sharing, exploring, and contributing real-world Agentic AI use cases built with Dynatrace. Whether you're a Dynatrace user, partner, or customer, you're invited to contribute assets for use cases that showcase best practices, efficient setups, or innovative solutions.
 
