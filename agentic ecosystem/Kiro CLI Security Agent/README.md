@@ -11,7 +11,7 @@ Key features:
 - AWS Security Hub integration-based Jira ticket creation.
 
 **Learn more and follow step-by-step instructions in the official documentation:**  
-[Automate cloud misconfiguration triaging and remediation with Kiro CLI and Dynatrace](TBD)
+[Automate cloud misconfiguration triaging and remediation with Kiro CLI and Dynatrace](https://docs.dynatrace.com/docs/shortlink/kiro-triaging-remediation)
 
 **Scenario 1: Kiro CLI-based triaging**
 ![Kiro CLI-based triaging](images/kiro-cli-1.png)
