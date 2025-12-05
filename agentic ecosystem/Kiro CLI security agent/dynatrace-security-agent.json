@@ -23,7 +23,7 @@
   "toolAliases": {},
   "allowedTools": [],
   "resources": [
-    "file://instructions.md"
+    "file://.kiro/agents/instructions.md"
   ],
   "hooks": {},
   "toolsSettings": {},
