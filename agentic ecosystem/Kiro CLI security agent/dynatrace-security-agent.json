@@ -1,0 +1,32 @@
+{
+  "$schema": "https://raw.githubusercontent.com/aws/amazon-q-developer-cli/refs/heads/main/schemas/agent-v1.json",
+  "name": "dynatrace-security-agent",
+  "description": "This agent helps validating security findings, such as Posture management findings with Dynatrace runtime and security context. It helps to reduce the amount of remediation work required by validating and confirming whether a specific finding is affecting monitored production applications. The confirmed misconbfiguration are being fixed, while the not confirmed are suppressed.",
+  "prompt": "Verify AWS Security Hub posture management compliance misconfigurations with Dynatarce to understand whether those affect any production applications/processes.",
+  "mcpServers": {
+    "dynatrace": {
+      "type": "http",
+      "url": "https://<DYNATRACE_TENANT>/platform-reserved/mcp-gateway/v0.1/servers/dynatrace-mcp/mcp",
+      "headers": {
+        "Authorization": "Bearer <DYNATRACE_PLATFORM_TOKEN>"
+      },
+      "tools": ["*"]
+    },
+    "atlassian": {
+			"type": "http",
+			"url": "https://mcp.atlassian.com/v1/sse"
+        }
+  },
+  "tools": [
+    "*"
+  ],
+  "toolAliases": {},
+  "allowedTools": [],
+  "resources": [
+    "file://instructions.md"
+  ],
+  "hooks": {},
+  "toolsSettings": {},
+  "useLegacyMcpJson": true,
+  "model": "claude-sonnet-4.5"
+}
