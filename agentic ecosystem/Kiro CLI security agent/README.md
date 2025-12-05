@@ -14,7 +14,7 @@ Key features:
 [Automate cloud misconfiguration triaging and remediation with Kiro CLI and Dynatrace](TBD)
 
 **Scenario 1: Kiro CLI-based triaging**
-![Kiro CLI-based triaging](images/kiro-cli-1.png.png)
+![Kiro CLI-based triaging](images/kiro-cli-1.png)
 
 **Scenario 2: Dynatrace-driven triaging**
-![Dynatrace-driven triaging](images/kiro-cli-2.png.png)
+![Dynatrace-driven triaging](images/kiro-cli-2.png)
