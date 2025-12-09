@@ -1,0 +1,271 @@
+metadata:
+  version: "1"
+  dependencies:
+    apps:
+      - id: dynatrace.automations
+        version: ^1.2367.6
+      - id: dynatrace.davis.copilot.workflow.actions
+        version: ^1.0.9
+      - id: dynatrace.jira
+        version: ^5.6.3
+  inputs:
+    - type: connection
+      schema: app:dynatrace.jira:connection
+      targets:
+        - tasks.create-jira-ticket.connectionId
+workflow:
+  title: "[Security-AI-Demo] AWS Security Hub triaging"
+  tasks:
+    create-jira-ticket:
+      name: create-jira-ticket
+      description: Create new Jira issue with various fields
+      action: dynatrace.jira:jira-create-issue
+      input:
+        labels: '{{ input()["jira"]["labels"] }}'
+        project: '{{ input()["jira"]["project"] }}'
+        summary: Critical and High compliance misconfigurations has been triaged
+        assignee: '{{ input()["jira"]["assignee"] }}'
+        reporter: '{{ input()["jira"]["reporter"] }}'
+        issueType: '{{ input()["jira"]["issue_type"] }}'
+        components: []
+        description: '{{result("verify-findings-and-prepare-jira-ticket").text}}'
+        connectionId: ""
+        fieldSetters: []
+      position:
+        x: 0
+        y: 3
+      predecessors:
+        - verify-findings-and-prepare-jira-ticket
+      conditions:
+        states:
+          verify-findings-and-prepare-jira-ticket: OK
+    get-critical-resource-level-findings:
+      name: get-critical-resource-level-findings
+      description: Query critical compliance findings from AWS Security Hub filtered
+        for the monitored accounts.
+      action: dynatrace.automations:execute-dql-query
+      active: true
+      input:
+        query: |-
+          fetch security.events, from:now()-24h
+          | filter in(event.type, {"COMPLIANCE_FINDING"})
+          | filter event.provider == "AWS Security Hub"
+          | filter finding.status != "PASSED"
+          | filter in(dt.security.risk.level,{"CRITICAL", "HIGH"})
+          | filter object.type != "AwsAccount"
+          | summarize by:{aws.account.id, aws.region, dt.security.risk.level, finding.id, finding.title, finding.description},
+          {
+            compliance.standards=arrayDistinct(arrayFlatten(collectDistinct(compliance.standards))), 
+            compliance.requirements=arrayDistinct(arrayFlatten(collectDistinct(compliance.requirements))), 
+            compliance.controls=arrayDistinct(arrayFlatten(collectDistinct(compliance.control))), 
+            finding.aws.resource.ids=collectDistinct(aws.resource.id),
+            finding.aws.resource.names=collectDistinct(aws.resource.name),
+            finding.aws.resource.types=collectDistinct(object.type)
+          }
+          // filter findings relevant to monitored accounts only
+          | lookup [
+            fetch dt.entity.ec2_instance, from:now()-15m
+            | filter isNotNull(runs)
+            | fields account=splitString(arn,":")[4]
+            | filterOut isNull(account)
+            | dedup account
+          ], sourceField:aws.account.id, lookupField:account
+          | filterOut isNull(lookup.account)
+          // join production entities
+          | join [
+                fetch dt.entity.process_group_instance, from:now()-15m
+                | fieldsAdd process.name=entity.name, process_group.id=instance_of[dt.entity.process_group], releasesProduct, releasesStage
+                | filter contains(releasesStage,"prod")
+                | fieldsRename process.id=id
+                | join [
+                  fetch dt.entity.host, from:now()-15m
+                  | fieldsAdd process_groups=runs[dt.entity.process_group]
+                  | expand process_group.id=process_groups
+                  | fieldsRemove process_groups
+                ], on:{left[process_group.id]==right[process_group.id]}, fields:{host.id=id, host.name=entity.name}
+                | lookup [
+                  fetch dt.entity.ec2_instance, from:now()-15m
+                  | fieldsAdd aws.account.id=splitString(arn,":")[4],
+                              host.id=runs[dt.entity.host], 
+                              creds.id=accessible_by[dt.entity.aws_credentials], 
+                              availability_zone.id=belongs_to[dt.entity.aws_availability_zone],
+                              ebs_volume.id=contains[dt.entity.ebs_volume]
+                  | filter isNotNull(runs)
+                ], sourceField:{host.id},lookupField:{host.id}, 
+                   fields:{   creds.id, aws.instance.name=entity.name,aws.instance_image.id=amiId, 
+                              aws.account.id, aws.instance.arn=arn ,aws.ec2_instance.id=awsInstanceId, 
+                              aws.ec2_instance.type=awsInstanceType, aws.name_tag=awsNameTag, 
+                              aws.security_group=awsSecurityGroup, aws.vpc_name=awsVpcName, availability_zone.id, 
+                              ebs_volume.id, aws.instance_of=instance_of, aws.region=regionName, aws.tags=tags, 
+                              localIp, publicIp, localHostName, publicHostName}
+                | expand creds.id
+                | expand ebs_volume.id
+                | join [
+                  fetch dt.entity.aws_credentials
+                ], on:{left[creds.id]==right[id]}, fields:{creds.name=entity.name}
+                | join [
+                  fetch dt.entity.aws_availability_zone
+                ], on:{left[availability_zone.id]==right[id]}, fields:{availability_zone.name=entity.name}
+                | join [
+                  fetch dt.entity.ebs_volume
+                ], on:{left[ebs_volume.id]==right[id]}, fields:{ebs_volume.name=entity.name}
+                | parse aws.instance.arn, "LD ':' LD ':' LD ':' LD ':' LD ':' LD '/' LD:instanceId"
+                | summarize by:{releasesProduct,releasesStage, aws.account.id},
+                {
+                  aws.regions=collectDistinct(aws.region),
+                  aws.resource.ids=arrayConcat(
+                    collectDistinct(aws.instance_image.id),
+                    collectDistinct(instanceId),
+                    arrayDistinct(arrayFlatten(collectDistinct(aws.security_group))),
+                    arrayDistinct(arrayFlatten(collectDistinct(aws.vpc_name))),
+                    collectDistinct(ebs_volume.name)),
+                  aws.resource.names=arrayConcat(
+                    arrayDistinct(arrayFlatten(collectDistinct(aws.vpc_name))),
+                    collectDistinct(creds.name),
+                    collectDistinct(availability_zone.name)
+                  )
+                }
+          ], on:{aws.account.id}, fields:{releasesProduct, aws.regions, production.aws.resource.ids=aws.resource.ids, production.aws.resource.names=aws.resource.names}
+          //| filter in(aws.resource.ids, right.aws.resource.ids) or in(aws.resource.names, right.aws.resource.names)
+          | fieldsAdd matched.resource.ids=arrayRemoveNulls(iCollectArray(if(in(finding.aws.resource.ids[],production.aws.resource.ids), finding.aws.resource.ids[])))
+          | fieldsAdd matched.resource.names=arrayRemoveNulls(iCollectArray(if(in(finding.aws.resource.names[],production.aws.resource.names),finding.aws.resource.names[])))
+          | fieldsAdd verification_status=if(arraySize(matched.resource.ids)>0 or arraySize(matched.resource.names)>0, "CONFIRMED", else:"NOT_CONFIRMED")
+          | summarize by:{
+              releasesProduct, dt.security.risk.level, verification_status
+          },
+          {
+            aws.account.ids=collectDistinct(aws.account.id),
+            aws.regions=collectDistinct(aws.region),
+            finding_instances.count=arraySize(collectDistinct(finding.id)),
+            finding_groups=collectDistinct(record(
+              compliance.standards, compliance.requirements, compliance.controls,
+              finding.title, finding.description)
+            ),
+            confirmed_resource.count=arraySize(arrayDistinct(arrayFlatten(collectArray(matched.resource.ids))))+
+                                   arraySize(arrayDistinct(arrayFlatten(collectArray(matched.resource.names)))),
+            reported_resource.count=arraySize(arrayDistinct(arrayFlatten(collectArray(finding.aws.resource.ids))))
+          }
+          | fieldsAdd finding_groups=if(verification_status=="CONFIRMED", finding_groups, else: arraySize(finding_groups))
+          | summarize by:{verification_status},
+          {
+            totalFindingInstances=sum(finding_instances.count),
+            findings = collectDistinct(record(
+              releasesProduct, dt.security.risk.level, aws.account.ids, finding_instances.count, finding_groups
+            ))
+          }
+      position:
+        x: 0
+        y: 1
+      predecessors: []
+      conditions:
+        custom: ""
+        states: {}
+    verify-findings-and-prepare-jira-ticket:
+      name: verify-findings-and-prepare-jira-ticket
+      description: Davis CoPilot Workflow Action Preview
+      action: dynatrace.davis.copilot.workflow.actions:davis-copilot
+      active: true
+      input:
+        config: disabled
+        prompt: >-
+          Analyze and verify security critical and high compliance findings that
+          affect production applications or related resources and accounts.
+
+          List confirmed and not confirmed findings in a Jira ticket-ready
+          content.
+
+
+          * Start with a summary of the amount of confirmed versus total
+          reported findings with percentage value as well.
+
+
+          * Then, list each confirmed findings:
+
+          * Add a table with a list of aws account id, product name
+          (`releasesProduct`), number of confirmed findings.
+
+          * Then list each finding in a separate section.
+
+          * For every confirmed finding, include: 
+              - Finding description.
+              - Verification status: confirmed or not confirmed.
+              - Risk level.
+              - Finding title.
+              - Finding type: resource or account-level
+              - A table with affected production resources, including:
+               -- Aws account id.
+               -- Affected product (`releasesProduct`).
+               -- Number of findings.
+          * Then, summarize the not confirmed findings (do not affect production
+          applications). The summary to include: 
+              - Risk levels of findings (collected distinct from `dt.security.risk.level`).
+              - A table with affected resources, including:
+               -- Aws account id.
+               -- Affected product (`releasesProduct`).
+               -- Number of findings.
+
+          ## General guidance
+
+          * Only output the content for the Jira issue, without any additional
+          explanations.
+
+          * Prepare a Jira ticket content suitable for an API call that would
+          summarize the findings. 
+
+          * Follow the h2. / h3. / h4. for marking headers in the output ready
+          for Jira API.
+
+          * Do not include in the output unnecessary strings, such as
+          ```markdown or ```.
+        autoTrim: false
+        supplementary: |-
+          ## Confirmed findings
+          {{result("get-critical-resource-level-findings").records}}
+
+
+          ## Sample Jira content elements for API (just an example)
+
+          h3. Compliance Findings Summary
+
+          h4. Finding ID: `arn:aws:securityhub:eu-central-1:3234234234234234234:subscription/cis-aws-foundations-benchmark/v/3.0.0/5.2/finding/23423426-e8a3-414b-b351-761cf2920468`
+
+          * *Risk Level:* *HIGH*
+          * *Compliance Standards:* CIS AWS Foundations Benchmark v3.0.0  
+          * *Compliance Control:* EC2.53  
+          * *Title:* 5.2 EC2 security groups should not allow ingress from 0.0.0.0/0 to remote server administration ports  
+          * *Description:* Public access to remote server administration ports, such as 22 and 3389, increases resource attack surface and unnecessarily raises the risk of resource compromise.  
+
+          h3. Affected Hosts
+
+          || *Host Name* || *Host ID* ||
+          | App-Prod      | HOST-2342342342342342   |
+          | App-Staging   | HOST-2342342342342344   |
+          | DB-Staging    | HOST-2342342342342355   |
+          | DB-prod       | HOST-2342342342342366   |
+
+          ---
+
+          ## IMPORTANT
+          * Don't use double * when making text bold, use only single *. Like *bold text*.
+      position:
+        x: 0
+        y: 2
+      predecessors:
+        - get-critical-resource-level-findings
+      conditions:
+        states:
+          get-critical-resource-level-findings: OK
+  description: ""
+  trigger: {}
+  schemaVersion: 3
+  result: null
+  input:
+    jira:
+      labels:
+        - dt-appsec-workflow
+      project: REPLACE_WITH_PROJECT_KEY
+      assignee: REPLACE_WITH_USER_ID_LIKE_121212:aaff11ee-66dd-44ee-8855-9977ffccbbee
+      reporter: REPLACE_WITH_USER_ID_LIKE_121212:aaff11ee-66dd-44ee-8855-9977ffccbbee
+      issue_type: REPLACE_WITH_ISSUE_TYPE_STRING
+  hourlyExecutionLimit: 1000
+  type: STANDARD
