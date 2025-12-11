@@ -1,6 +1,6 @@
 {
   "name": "dynatrace-security-agent",
-  "description": "This agent helps validating security findings, such as posture management findings with Dynatrace runtime and security context. It helps to reduce the amount of remediation work required by validating and confirming whether a specific finding is affecting monitored production applications. The confirmed misconbfiguration are being fixed, while the not confirmed are suppressed.",
+  "description": "This agent helps validating security findings, such as posture management findings with Dynatrace runtime and security context. It helps to reduce the amount of remediation work required by validating and confirming whether a specific finding is affecting monitored production applications. The confirmed misconfigurations are being fixed, while the not confirmed are suppressed.",
   "prompt": "Verify cloud misconfigurations with Dynatarce to understand whether those affect any production applications/processes.",
   "mcpServers": {
     "dynatrace": {
