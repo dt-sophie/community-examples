@@ -1,12 +1,12 @@
 # Kiro Agent Instructions for Dynatrace
 
-This folder contains the `dynatrace.md` steering file, designed to enable the Kiro agent to interact seamlessly with your Dynatrace environment.
+This folder contains the `dynatrace.md` steering file of the [Dynatrace Kiro power](https://kiro.dev/powers/), designed to enable the Kiro agent to interact seamlessly with your Dynatrace environment.
 
 ## Overview
 
 The `dynatrace.md` file serves as a comprehensive guide for the Kiro agent. It defines the capabilities and usage patterns for various Dynatrace MCP tools, enabling the agent to act as an expert observability assistant.
 
-<img width="1800" height="740" alt="schemativ overview" src="https://raw.githubusercontent.com/Dynatrace/community-examples/refs/heads/main/agentic%20ecosystem/Kiro%20IDE%20Power/overview.png" />
+<img width="1800" height="740" alt="schemativ overview" src="https://raw.githubusercontent.com/Dynatrace/community-examples/refs/heads/main/agentic%20ecosystem/Kiro%20power/overview.png" />
 
 ## Supported Use Cases
 
