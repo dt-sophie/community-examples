@@ -7,7 +7,7 @@ A security agent configuration for [Atlassian Rovo Dev](https://support.atlassia
 | File | Description |
 |------|-------------|
 | `dynatrace-security-agent.md` | Agent instructions for security finding verification and Jira integration |
-| `security-ai-demo-rva-critical-vulnerabilities-jira-ticket.workflow.json` | Dynatrace Workflow that triggers Jira ticket creation for critical RVA vulnerabilities |
+| `create-jira-tickets-for-rva-critical-vulnerabilities.json` | Dynatrace Workflow that triggers Jira ticket creation for critical RVA vulnerabilities |
 
 ## What this agent does
 
@@ -53,7 +53,7 @@ Then invoke it with `/subagents` or let Rovo Dev delegate to it automatically ba
 
 ### 3. (Optional) Deploy the Dynatrace Workflow
 
-Import `security-ai-demo-rva-critical-vulnerabilities-jira-ticket.workflow.json` into Dynatrace to automatically trigger Jira ticket creation when critical vulnerabilities are detected.
+Import `create-jira-tickets-for-rva-critical-vulnerabilities.json` into Dynatrace to automatically trigger Jira ticket creation when critical vulnerabilities are detected.
 
 ## Documentation
 
