@@ -100,9 +100,7 @@ workflow:
     create_jira_issue:
       name: create_jira_issue
       input:
-        labels:
-        - security-vulnerability
-        - <label>dt-appsec-workflow</label>
+        labels: []
         project:
           id: ''
         summary: '{{ result("get_vulnerability_info").records[0]["vulnerability.risk.level"]
