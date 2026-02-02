@@ -1,0 +1,203 @@
+{
+  "id": "",
+  "title": "[Security-AI-Demo] RVA Critical and High Vulnerabilities - Jira ticket",
+  "description": "",
+  "actor": "",
+  "owner": "",
+  "ownerType": "USER",
+  "isPrivate": false,
+  "schemaVersion": 3,
+  "trigger": {
+    "eventTrigger": {
+      "isActive": true,
+      "filterQuery": "event.type == \"VULNERABILITY_STATUS_CHANGE_EVENT\"\nAND (vulnerability.risk.level == \"CRITICAL\" OR vulnerability.risk.level == \"HIGH\") \nAND (event.status_transition == \"NEW_OPEN\" OR event.status_transition == \"REOPEN\")\nAND event.level == \"VULNERABILITY\"\nAND vulnerability.stack != \"CODE\"\n",
+      "uniqueExpression": null,
+      "triggerConfiguration": {
+        "type": "event",
+        "value": {
+          "query": "event.type == \"VULNERABILITY_STATUS_CHANGE_EVENT\"\nAND (vulnerability.risk.level == \"CRITICAL\" OR vulnerability.risk.level == \"HIGH\") \nAND (event.status_transition == \"NEW_OPEN\" OR event.status_transition == \"REOPEN\")\nAND event.level == \"VULNERABILITY\"\nAND vulnerability.stack != \"CODE\"\n",
+          "eventType": "security.events"
+        }
+      }
+    }
+  },
+  "result": null,
+  "type": "STANDARD",
+  "input": {
+    "affected.entity": "DEMO: process-group-name",
+    "remediation.info": "DEMO: Remediation information from RVA",
+    "vulnerability.id": "DEMO-CVE-2024-12345",
+    "affected.entityId": "PROCESS_GROUP-XXXXXXXXXXXX",
+    "vulnerability.cve": "CVE-2024-12345",
+    "vulnerability.title": "Critical Remote Code Execution Vulnerability",
+    "vulnerability.riskLevel": "CRITICAL",
+    "vulnerability.riskScore": 9.8,
+    "vulnerability.description": "DEMO: Vulnerability description from RVA"
+  },
+  "hourlyExecutionLimit": 1000,
+  "guide": "# RVA Critical Vulnerabilities Agent\n\nGet tangible assistance to remediate critical vulnerabilities detected by Runtime Vulnerability Analytics (RVA). This workflow automatically analyzes critical vulnerabilities, generates remediation guidance, and pushes the findings to Jira for tracking.\n\n# Prerequisites\n\n* [Runtime Vulnerability Analytics](https://docs.dynatrace.com/docs/shortlink/vulnerability-analytics) is set up and enabled for your environment\n* This workflow should be triggered as a sub-workflow with inputs representing critical vulnerabilities from RVA.\n\n# How to Setup\n\n1. During the template deployment select an existing Jira connection or create a new one.\n2. After the workflow deployment, configure the following parameters in the [`create_jira_issue`](?task=create_jira_issue&tab=input) task:\n* Project - your Jira project name (for example, `Security Project`).\n* Issue type - your Jira issue type name (for example, `Security Issue`).\n* Assignee - select a user from a drop-down or specify a user Jira ID.\n* Reporter - select a user from a drop-down or specify a user Jira ID.\n* (optional) Labels - comma-separated list of labels to be applied on the created Jira ticket.\n3. Enable the workflow trigger.\n\n# Workflow flow\n\n1. The workflow checks if there already is an open Jira ticket for the particular vulnerability.\n2. Based on the vulnerability details, remediation guidance is generated using Davis AI.\n3. The resulting remediation suggestion is reported to Jira for tracking.",
+  "tasks": {
+    "create_jira_issue": {
+      "name": "create_jira_issue",
+      "input": {
+        "labels": [
+          "security-vulnerability",
+          "<label>dt-appsec-workflow</label>"
+        ],
+        "project": {
+          "id": ""
+        },
+        "summary": "{{ result(\"get_vulnerability_info\").records[0][\"vulnerability.risk.level\"] }} vulnerability detected: {{ result(\"get_vulnerability_info\").records[0][\"vulnerability.display_id\"] }} - {{ result(\"get_vulnerability_info\").records[0][\"vulnerability.title\"] }} affecting {{ result(\"get_vulnerability_info\").records[0][\"affected_entities.count\"] }} entities\n",
+        "reporter": {
+          "id": ""
+        },
+        "issueType": {
+          "id": ""
+        },
+        "components": [],
+        "description": "{{ result(\"get_vulnerability_info\").records[0][\"vulnerability.risk.level\"] }} vulnerability detected: {{ result(\"get_vulnerability_info\").records[0][\"vulnerability.display_id\"] }} - {{ result(\"get_vulnerability_info\").records[0][\"vulnerability.title\"] }} affecting {{ result(\"get_vulnerability_info\").records[0][\"affected_entities.count\"] }} entities\n\nh2. Vulnerability Details\n\n* *CVE:* {{ result(\"get_vulnerability_info\").records[0][\"vulnerability.references.cve\"] }}\n* *Risk Level:* {{ result(\"get_vulnerability_info\").records[0][\"vulnerability.risk.level\"] }}\n* *Risk Score:* {{ result(\"get_vulnerability_info\").records[0][\"vulnerability.risk.score\"] }}\n* *Description:* {{ result(\"get_vulnerability_info\").records[0][\"vulnerability.description\"] }}\n\n[Open vulnerability in Dynatrace]({{ result(\"get_vulnerability_info\").records[0][\"vulnerability.url\"] }})",
+        "connectionId": "",
+        "fieldSetters": []
+      },
+      "action": "dynatrace.jira:jira-create-issue",
+      "active": true,
+      "position": {
+        "x": 0,
+        "y": 3
+      },
+      "conditions": {
+        "custom": "{{ not result(\"search_jira_issue\") }}",
+        "states": {
+          "search_jira_issue": "OK"
+        }
+      },
+      "description": "Create new Jira issue for critical vulnerability",
+      "predecessors": [
+        "search_jira_issue"
+      ]
+    },
+    "search_jira_issue": {
+      "name": "search_jira_issue",
+      "input": {
+        "jql": "summary ~ \"vulnerability detected {{ result(\"get_vulnerability_info\").records[0][\"vulnerability.display_id\"] }}\" AND statusCategory != Done",
+        "expand": [],
+        "fields": [
+          "id",
+          "key"
+        ],
+        "connectionId": ""
+      },
+      "action": "dynatrace.jira:jira-jql-search",
+      "position": {
+        "x": 0,
+        "y": 2
+      },
+      "conditions": {
+        "states": {
+          "get_vulnerability_info": "OK"
+        }
+      },
+      "description": "Search for existing Jira issues for this vulnerability",
+      "predecessors": [
+        "get_vulnerability_info"
+      ]
+    },
+    "get_vulnerability_info": {
+      "name": "get_vulnerability_info",
+      "input": {
+        "query": "fetch security.events\n| filter event.type == \"VULNERABILITY_STATE_REPORT_EVENT\"\nAND event.level == \"VULNERABILITY\"\nAND vulnerability.id == \"{{event()[\"vulnerability.id\"] }}\"\n| limit 1"
+      },
+      "action": "dynatrace.automations:execute-dql-query",
+      "position": {
+        "x": 0,
+        "y": 1
+      },
+      "description": "Make use of Dynatrace Grail data in your workflow.",
+      "predecessors": [],
+      "customSampleResult": {
+        "records": [
+          {
+            "event.id": "15435339850609249255_1769526315718000000",
+            "timestamp": "2026-01-27T15:05:15.718000000Z",
+            "event.kind": "SECURITY_EVENT",
+            "event.name": "Vulnerability historical state report event",
+            "event.type": "VULNERABILITY_STATE_REPORT_EVENT",
+            "event.level": "VULNERABILITY",
+            "event.status": "OPEN",
+            "event.category": "VULNERABILITY_MANAGEMENT",
+            "event.provider": "Dynatrace",
+            "vulnerability.id": "15435339850609249255",
+            "event.description": "S-461 External Initialization of Trusted Variables or Data Stores state event reported",
+            "event.group_label": "STATE_REPORT",
+            "vulnerability.url": "https://your-tenant.dynatrace.com/ui/security/problem/15435339850609249255",
+            "vulnerability.type": "External Initialization of Trusted Variables or Data Stores",
+            "vulnerability.stack": "CODE_LIBRARY",
+            "vulnerability.title": "External Initialization of Trusted Variables or Data Stores",
+            "dt.openpipeline.source": "/platform/ingest/v1/security.events",
+            "event.provider_product": "Runtime Vulnerability Analytics",
+            "affected_entities.count": "9",
+            "affected_entities.types": [
+              "PROCESS_GROUP"
+            ],
+            "vulnerability.display_id": "S-461",
+            "vulnerability.first_seen": "2026-01-23T10:13:51.728000000Z",
+            "vulnerability.risk.level": "LOW",
+            "vulnerability.risk.scale": "Davis Security Score",
+            "vulnerability.risk.score": 1.8,
+            "vulnerability.technology": "JAVA",
+            "vulnerability.cvss.vector": "CVSS:4.0/AV:L/AC:H/AT:P/PR:H/UI:N/VC:L/VI:L/VA:L/SC:L/SI:L/SA:L",
+            "vulnerability.description": "[ch.qos.logback:logback-core](https://mvnrepository.com/artifact/ch.qos.logback/logback-core) is a logback-core module.\n\nAffected versions of this package are vulnerable to External Initialization of Trusted Variables or Data Stores during the configuration file processing. An attacker can instantiate arbitrary classes already present on the class path by compromising an existing configuration file.",
+            "vulnerability.external_id": "SNYK-JAVA-CHQOSLOGBACK-15062482",
+            "vulnerability.mute.status": "NOT_MUTED",
+            "vulnerability.cvss.version": "4.0",
+            "vulnerability.external_url": "https://snyk.io/vuln/SNYK-JAVA-CHQOSLOGBACK-15062482?utm_campaign=dynatrace-application-security&utm_medium=partner&utm_source=dynatrace",
+            "related_entities.hosts.count": "4",
+            "vulnerability.references.cve": [
+              "CVE-2026-1225"
+            ],
+            "vulnerability.references.cwe": [
+              "CWE-454"
+            ],
+            "affected_entities.hosts.count": "0",
+            "vulnerability.cvss.base_score": 1.8,
+            "vulnerability.is_fix_available": true,
+            "vulnerability.references.owasp": [
+              "2021:A6"
+            ],
+            "related_entities.services.count": "8",
+            "vulnerability.resolution.status": "OPEN",
+            "related_entities.databases.count": "1",
+            "related_entities.applications.count": "0",
+            "vulnerability.davis_assessment.level": "LOW",
+            "vulnerability.davis_assessment.score": 1.8,
+            "vulnerability.resolution.change_date": "2026-01-23T10:14:18.684000000Z",
+            "vulnerability.davis_assessment.vector": "CVSS:4.0/AV:L/AC:H/AT:P/PR:H/UI:N/VC:L/VI:L/VA:L/SC:L/SI:L/SA:L",
+            "vulnerability.remediation.description": "Upgrade `ch.qos.logback:logback-core` to version 1.5.25 or higher.",
+            "affected_entities.management_zones.ids": [],
+            "affected_entities.process_groups.count": "9",
+            "affected_entities.vulnerable_functions": [],
+            "affected_entities.kubernetes_nodes.count": "0",
+            "affected_entities.management_zones.names": [],
+            "affected_entities.affected_processes.count": "9",
+            "related_entities.kubernetes_clusters.count": "1",
+            "affected_entities.vulnerable_components.ids": [
+              "SOFTWARE_COMPONENT-B655578CE295A20A",
+              "SOFTWARE_COMPONENT-A88DAE080CBE4E9C"
+            ],
+            "related_entities.kubernetes_workloads.count": "9",
+            "affected_entities.vulnerable_components.names": [
+              "ch.qos.logback:logback-core:1.2.11",
+              "ch.qos.logback:logback-core:1.2.3"
+            ],
+            "vulnerability.davis_assessment.exploit_status": "NOT_AVAILABLE",
+            "vulnerability.davis_assessment.assessment_mode": "FULL",
+            "vulnerability.davis_assessment.exposure_status": "NOT_DETECTED",
+            "vulnerability.davis_assessment.data_assets_status": "REACHABLE",
+            "vulnerability.davis_assessment.assessment_mode_reasons": [],
+            "vulnerability.davis_assessment.vulnerable_function_status": "NOT_AVAILABLE"
+          }
+        ]
+      }
+    }
+  }
+}
