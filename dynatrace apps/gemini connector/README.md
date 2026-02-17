@@ -21,7 +21,7 @@ Connect Google Gemini with Dynatrace using this action for Workflows. It allows 
 
 ## 🚀 Install the app on the Dynatrace platform
 
-*Gemini Connector for Dynatrace Workflows is available as a Dynatrace app to all customers upon request. Please contact your Dynatrace representative to activate CI/CD Observability for your tenant.*
+*Gemini Connector for Dynatrace Workflows is available as a Dynatrace app to all customers upon request. Please contact your Dynatrace representative to activate Gemini Connector for your tenant.*
 
 - Once installed, you can find it as a new action if you search for *Gemini* in Workflows.
 
