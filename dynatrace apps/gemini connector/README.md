@@ -9,6 +9,14 @@ Connect Google Gemini with Dynatrace using this action for Workflows. It allows 
 - **Execute prompt:** define and execute the prompt defined in the workflow action
 - **Handle response:** store and analyze response
 
+<img width="700" alt="cicd-image-1" src="https://github.com/Dynatrace/community-examples/blob/main/dynatrace%20apps/gemini%20connector/workflow.png" />
+
+*Dynatrace workflow with Gemini action*
+
+<img width="700" alt="cicd-image-1" src="https://github.com/Dynatrace/community-examples/blob/main/dynatrace%20apps/gemini%20connector/example.png" />
+
+*Illustrative example querying for log data and asking Gemini for further error analysis.*
+
 ---
 
 ## 🚀 Install the app on the Dynatrace platform
@@ -27,7 +35,12 @@ Create a new workflow and add a task to fetch the data you want analyzed (e.g., 
 
 - **Action:** Add a DQL Query task named execute_dql_query.
 - Example Query:
-
+    ```sql
+    fetch logs  
+    | filter matchesValue(status, "ERROR")  
+    | summarize count=count(), by:{content}  
+    | limit 10
+    ```
 
 ### 2. (Optional) Data Optimization
 To save on token costs and improve response accuracy, use a script to extract only the necessary records before sending them to Gemini.
