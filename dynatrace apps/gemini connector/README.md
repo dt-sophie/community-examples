@@ -45,7 +45,7 @@ To save on token costs and improve response accuracy, use a script to extract on
 
 - Action: Add a Run JavaScript task.
 - Code:
-```json
+```js
 import { execution, result } from "@dynatrace-sdk/automation-utils";
 
 export default async function () {
@@ -56,23 +56,26 @@ export default async function () {
 ```
 
 ### 3. Configure the Gemini Task
-Add a new task and search for Gemini.
-1
-Under Input, click + Create a new connection.
-2
-Enter a Connection Name, your Model ID, and your API Key (which you can generate here: https://aistudio.google.com/api-keys).
-Note: Do not modify the URL unless you are using a custom endpoint.
+Add a new task and search for **Gemini**.
 
-Click Add item. Your connection should now show up on the Connection dropdown for the task (refresh page if not).
-3
-4. Set up the Prompt
-Prompt: Enter the specific question or instruction for the AI (e.g., "Analyze these logs and suggest a potential root cause").
-Name of Task with data to analyze: Enter the exact name of the task from Step 1 (or Step 2 if you used the optimization script).
-5. (Optional) Store the AI Response
+- Under **Input**, click + *Create a new connection*.
+
+- Enter a **Connection Name**, your **Model ID**, and your **API Key** (which you can generate here: https://aistudio.google.com/api-keys).
+
+> Note: Do not modify the URL unless you are using a custom endpoint.
+
+- Click **Add item**. Your connection should now show up on the Connection dropdown for the task (refresh page if not).
+
+### 4. Set up the Prompt
+- **Prompt:** Enter the specific question or instruction for the AI (e.g., "Analyze these logs and suggest a potential root cause").
+- **Name of Task with data to analyze:** Enter the exact name of the task from Step 1 (or Step 2 if you used the optimization script).
+
+### 5. (Optional) Store the AI Response
 You can archive Gemini's analysis back into Dynatrace as a log for long-term tracking.
 
-Add a Run JavaScript task.
-Use the Dynatrace SDK to ingest the task output as a log, sample code below.
+Add a **Run JavaScript** task.
+- Use the Dynatrace SDK to ingest the task output as a log, sample code below.
+```js
 import { execution, result } from "@dynatrace-sdk/automation-utils";
 import { logsClient } from '@dynatrace-sdk/client-classic-environment-v2';
 
@@ -92,10 +95,12 @@ export default async function () {
     type: 'application/json; charset=utf-8'
   });
 }
+```
 To view your AI summaries later, run the following in the Logs app:
+```js
 fetch logs
 | filter matchesValue(type, "AI Summary") AND matchesValue(log.source, "Gemini")
-
+```
 
 
 
