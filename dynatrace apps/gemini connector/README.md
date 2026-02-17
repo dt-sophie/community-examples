@@ -1,5 +1,5 @@
 # Gemini Connector for Dynatrace Workflows
-Unified observability for **pipelines, jobs, stages and PRs** across multiple CI/CD providers (Azure DevOps, GitHub, GitLab, etc.) inside **Dynatrace Platform**.
+Connect **Google Gemini** with **Dynatrace** using this **Workflows** action,  allowing to execute a prompt and receive data within Dynatrace to for further analysis.
 
 ---
 
@@ -45,15 +45,18 @@ export default async function () {
 
 ### 3. Configure the Gemini Task
 - Add a new task and search for **Gemini**.
-<img alt="cicd-image-1" src="https://github.com/Dynatrace/community-examples/blob/main/dynatrace%20apps/gemini%20connector/chose%20action.png" />
+<img width="500" height="350" alt="cicd-image-1" src="https://github.com/Dynatrace/community-examples/blob/main/dynatrace%20apps/gemini%20connector/chose%20action.png" />
+
 - Under **Input**, click + **Create a new connection**.
-<img alt="cicd-image-2" src="https://github.com/Dynatrace/community-examples/blob/main/dynatrace%20apps/gemini%20connector/workflows.png" />
+
+<img width="420" height="315" alt="cicd-image-2" src="https://github.com/Dynatrace/community-examples/blob/main/dynatrace%20apps/gemini%20connector/workflows.png" />
+
 - Enter a **Connection Name**, your **Model ID**, and your **API Key** (which you can generate here: https://aistudio.google.com/api-keys).
 
 > Note: Do not modify the URL unless you are using a custom endpoint.
 
 - Click **Add item**. Your connection should now show up on the Connection dropdown for the task (refresh page if not).
-<img alt="cicd-image-3" src="[https://github.com/user-attachments/assets/69897507-f272-4bb1-a17e-d87c8278b201](https://github.com/Dynatrace/community-examples/blob/main/dynatrace%20apps/gemini%20connector/gemini%20connections.png)" />
+<img width="550" height="600" alt="cicd-image-3" src="https://github.com/Dynatrace/community-examples/blob/main/dynatrace%20apps/gemini%20connector/gemini%20connections.png" />
 
 ### 4. Set up the Prompt
 - **Prompt:** Enter the specific question or instruction for the AI (e.g., "Analyze these logs and suggest a potential root cause").
