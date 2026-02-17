@@ -1,12 +1,13 @@
 # Gemini Connector for Dynatrace Workflows
-Connect **Google Gemini** with **Dynatrace** using this **Workflows** action,  allowing to execute a prompt and receive data within Dynatrace to for further analysis.
+Connect Google Gemini with Dynatrace using this action for Workflows. It allows to define a prompt, execute within Gemini and receive and process the result and data within Dynatrace for further analysis.
 
 ---
 
 ## ✨ Features
 
-- **Connect**: Connect to Gemini
-- **Execute prompt**: run the prompt defined in workflow action
+- **Connect:** manage connections to Gemini with support for different models (using API key)
+- **Execute prompt:** define and execute the prompt defined in the workflow action
+- **Handle response:** store and analyze response
 
 ---
 
@@ -14,7 +15,7 @@ Connect **Google Gemini** with **Dynatrace** using this **Workflows** action,  a
 
 *Gemini Connector for Dynatrace Workflows is available as a Dynatrace app to all customers upon request. Please contact your Dynatrace representative to activate CI/CD Observability for your tenant.*
 
-- Once installed, you can find it as a new action if you search for *Gemini* in your Workfows app.
+- Once installed, you can find it as a new action if you search for *Gemini* in Workflows.
 
 ---
 
