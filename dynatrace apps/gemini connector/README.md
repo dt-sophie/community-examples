@@ -29,7 +29,7 @@ Create a new workflow and add a task to fetch the data you want analyzed (e.g., 
 - Example Query:
 
 
-### 2. Data Optimization
+### 2. (Optional) Data Optimization
 To save on token costs and improve response accuracy, use a script to extract only the necessary records before sending them to Gemini.
 
 - Action: Add a **Run JavaScript** task.
