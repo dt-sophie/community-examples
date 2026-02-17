@@ -40,7 +40,7 @@ Unified observability for **pipelines, jobs, stages and PRs** across multiple CI
 4. Navigate to CI/CD Observability to start exploring the data.
     <img width="1677" height="914" alt="cicd-image-2" src="https://github.com/Dynatrace/community-examples/blob/main/dynatrace%20apps/CI-CD%20Pipeline/explore-data.jpg" />
 5. Filters are only applied after clicking the refresh button to avoid unnecessary queries
-    <img width="1684" height="563" alt="cicd-image-3" src="[https://github.com/user-attachments/assets/e4a25259-aabd-456c-995b-11a93da4dd41](https://github.com/Dynatrace/community-examples/blob/main/dynatrace%20apps/CI-CD%20Pipeline/apply-filter.jpg)" />
+    <img width="1684" height="563" alt="cicd-image-3" src="https://github.com/Dynatrace/community-examples/blob/main/dynatrace%20apps/CI-CD%20Pipeline/apply-filter.jpg" />
    
 
 ---
