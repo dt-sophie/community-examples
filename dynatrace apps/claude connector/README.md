@@ -65,7 +65,7 @@ export default async function () {
 
 <img width="420" alt="cicd-image-2" src="https://github.com/Dynatrace/community-examples/blob/main/dynatrace%20apps/claude%20connector/claude-task.png" />
 
-- Enter a **Connection Name**, your **Model ID**, and your **API Key** (which you can generate here: https://aistudio.google.com/api-keys).
+- Enter a **Connection Name**, your **Model ID**, and your **API Key**.
 
 > Note: Do not modify the URL unless you are using a custom endpoint.
 
