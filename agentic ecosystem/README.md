@@ -7,3 +7,6 @@ This folder serves as a community-driven collection of use cases to help others:
 
 - Get inspired by real use cases
 - Accelerate setup
+
+## License
+[Apache License v2.0](https://github.com/Dynatrace/community-examples/blob/main/LICENSE.txt).
