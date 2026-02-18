@@ -15,3 +15,6 @@ This folder serves as a **community-driven collection** of configuration-as-code
 - Accelerate setup for common monitoring and operational scenarios
 
 #### All Configuration as Code Examples are currently still stored here: https://github.com/Dynatrace/dynatrace-configuration-as-code-samples# and will be moved to this repository over the upcoming weeks.
+
+## License
+[Apache License v2.0](https://github.com/Dynatrace/community-examples/blob/main/LICENSE.txt).
