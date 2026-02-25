@@ -8,20 +8,18 @@ Together, these dashboards enable security, IAM, and operations teams to **detec
 
 ---
 
-## 📚 Dashboard Overview
+## 📚 Contained Dashboards
 
-This dashboard pack includes the following dashboards:
-
-0. **Executive Summary** – High-level Active Directory activity snapshot  
-1. **Password Changes** – User and administrator password reset tracking  
-2. **Lockout Source Investigation** – Root cause analysis for account lockouts  
-3. **Account Changes Audit** – User lifecycle and account modifications  
-4. **Group Modifications** – Group membership and privilege changes  
-5. **Lockout & Disable Root Cause** – Combined investigation dashboard  
-6. **Extended Attributes Audit** – Deep audit of directory attribute changes  
-7. **User & OU Movement Tracking** – Object moves and renames  
-8. **GPO Changes** – Group Policy Object modifications  
-9. **File Audit (DFS)** – File access and permission auditing  
+0. [Executive Summary](#0️⃣-executive-summary-dashboard) – High-level Active Directory activity snapshot  
+1. [Password Changes](#1️⃣-password-changes-dashboard) – User and administrator password reset tracking  
+2. [Lockout Source Investigation](#2️⃣-lockout-source-investigation-dashboard) – Root cause analysis for account lockouts  
+3. [Account Changes Audit](#3️⃣-account-changes-audit-dashboard) – User lifecycle and account modifications  
+4. [Group Modifications](#4️⃣-group-modifications-dashboard) – Group membership and privilege changes  
+5. [Lockout & Disable Root Cause](#5️⃣-lockout--disable-root-cause-dashboard) – Combined investigation dashboard  
+6. [Extended Attributes Audit](#6️⃣-extended-attributes-audit-dashboard) – Deep audit of directory attribute changes  
+7. [User & OU Movement Tracking](#7️⃣-user--ou-movement-tracking-dashboard) – Object moves and renames  
+8. [GPO Changes](#8️⃣-gpo-changes-dashboard) – Group Policy Object modifications  
+9. [File Audit (DFS)](#9️⃣-file-audit-dfs-dashboard) – File access and permission auditing  
 
 Each dashboard can be used independently but is **designed to work together** for faster investigations and better visibility.
 
@@ -38,8 +36,6 @@ Provides a **quick snapshot of your Active Directory login and change activity**
 This dashboard is ideal as a **starting point** for daily monitoring and executive-level visibility.
 
 ### 📊 What You’ll See
-
-Summary tiles for:
 
 - **Successful vs. Failed Logins**
 - **Account Lockouts and Kerberos Pre-Authentication Failures**
@@ -133,8 +129,6 @@ Covers:
 
 Monitors **group membership and privilege changes**, a critical area for security and compliance.
 
-Includes tracking of **adds, removals, and group attribute changes**.
-
 ### 📊 What You’ll See
 
 - **Summary of group membership adds, removals, and changes**
@@ -179,8 +173,6 @@ Investigates the **root causes of account lockouts and account disable events** 
 
 Audits **changes to extended directory attributes** using **Directory Service Changes events (5136)**.
 
-Ideal for **deep forensic analysis and compliance auditing**.
-
 ### 📊 What You’ll See
 
 - **Summary of attribute change volume**
@@ -202,10 +194,6 @@ Ideal for **deep forensic analysis and compliance auditing**.
 
 Tracks **directory object movement and renames**, including users and organizational units.
 
-Uses:
-- DS Object Moved (5139)
-- Account name changes (4781)
-
 ### 📊 What You’ll See
 
 - **Summary of objects moved and renamed**
@@ -222,10 +210,6 @@ Uses:
 ### 🎯 Purpose
 
 Confirms **who modified Group Policy Objects** and reviews **which settings were changed**.
-
-Uses:
-- DS Object Modified (5136) filtered to GPO containers
-- Domain Policy Changed (4739)
 
 ### 📊 What You’ll See
 
@@ -245,12 +229,6 @@ Uses:
 ### 🎯 Purpose
 
 Audits **file access and permission changes** on DFS and file servers.
-
-Uses Object Access events:
-- Access Attempt (4663)
-- Handle Requested (4656)
-- Network Share Check (5145)
-- Permissions Changed (4670)
 
 ### 📊 What You’ll See
 
