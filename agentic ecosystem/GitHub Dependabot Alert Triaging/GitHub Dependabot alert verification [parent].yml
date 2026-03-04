@@ -1,261 +1,277 @@
 metadata:
-  version: "1"
+  version: '1'
   dependencies:
     apps:
-      - id: dynatrace.automations
-        version: ^1.2279.4
-      - id: dynatrace.davis.copilot.workflow.actions
-        version: ^1.0.9
+    - id: dynatrace.automations
+      version: ^1.2688.2
+    - id: dynatrace.davis.copilot.workflow.actions
+      version: ^1.1.2
   inputs: []
 workflow:
-  title: 'GitHub Dependabot alert verification [parent]'
+  title: GitHub Dependabot alert verification [parent]
+  description: ''
+  schemaVersion: 4
+  trigger:
+    schedule:
+      isActive: false
+      trigger:
+        type: interval
+        intervalMinutes: 180
+      filterParameters:
+        earliestStart: '2025-11-12'
+        earliestStartTime: '12:09'
+      timezone: Europe/Vienna
+      inputs: {}
+  result: null
+  type: STANDARD
+  input: {}
+  hourlyExecutionLimit: 1000
+  guide: null
   tasks:
     verify-dependabot-alert:
       name: verify-dependabot-alert
-      description: Davis CoPilot Workflow Action Preview
-      action: dynatrace.davis.copilot.workflow.actions:davis-copilot
-      active: true
       input:
         config: disabled
-        prompt: >-
-          Verify whether the Dependabot alerts are confirmed, meaning for each
-          alert whether:
-
-          a) the corresponding vulnerable library is running and represented by
-          a matching software component.
-
-          b) the corresponding CVEs are confirmed by the Dynatrace Runtime
-          Vulnerability Analytics (RVA) with amatching vulnerability findings.
-
-
-          Generate a summary in a markdown format that would include:
-
-          * Copilot instructions:
-
-          "Based on the confirmation status act on the Dependabot alerts - for
-          the confirmed ones, apply the fixes. Not confimed alerts should be
-          dismissed."
-
-          * Summary per each vulnerable library:
-
-          ** The details of the original Dependabot alerts including it's ID.
-
-          **  Runtime context from the monitored software component and it's
-          related entities.
-
-          ** Status whether the vulnerable library is confirmed with the
-          details:
-
-          *** Not running nor monitored --> will result in Not-confirmed status.
-
-          *** Confirmed running but no runtime CVE detected --> will result in
-          Not-confirmed status.
-
-          *** Confirmed running and at least one confirmed runtime CVE detected,
-          but vulnerable function is NOT_IN_USE --> will result in Not-confirmed
-          status.
-
-          *** Confirmed running and at least one confirmed runtime CVE detected,
-          with any other status of the vulnerable function  --> will result in
-          Confirmed status.
-
-          ** Vulnerability context from the Dynatrace RVA findings, including
-          the vulnerable function status to be included per CVE.
-
-
-          ## Output instructions
-
-          Output the text as a one line JSON string, properly escaped so that it
-          will be possible to assign it to be a JSON value. 
-
-          For example: "# Dependabot Alert Verification Summary\n\n## Original
-          Alert Details\n"
-
-          Do not prefix the output string with ``` nor postfix with ```.
+        prompt: "Verify whether the Dependabot alerts are confirmed, meaning for each\
+          \ alert whether:\na) the corresponding vulnerable library is running and\
+          \ represented by a matching software component.\nb) the corresponding CVEs\
+          \ are confirmed by the Dynatrace Runtime Vulnerability Analytics (RVA) with\
+          \ amatching vulnerability findings.\n\nGenerate a summary in a markdown\
+          \ format that would include:\n* Copilot instructions:\n\"Based on the confirmation\
+          \ status act on the Dependabot alerts - for the confirmed ones, apply the\
+          \ fixes. Not confimed alerts should be dismissed.\"\n* Summary per each\
+          \ vulnerable library:\n** The details of the original Dependabot alerts\
+          \ including it's ID.\n**  Runtime context from the monitored software component\
+          \ and it's related entities.\n** Status whether the vulnerable library is\
+          \ confirmed with the details:\n*** Not running nor monitored --> will result\
+          \ in Not-confirmed status.\n*** Confirmed running but no runtime CVE detected\
+          \ --> will result in Not-confirmed status.\n*** Confirmed running and at\
+          \ least one confirmed runtime CVE detected, but vulnerable function is NOT_IN_USE\
+          \ --> will result in Not-confirmed status.\n*** Confirmed running and at\
+          \ least one confirmed runtime CVE detected, with any other status of the\
+          \ vulnerable function  --> will result in Confirmed status.\n** Vulnerability\
+          \ context from the Dynatrace RVA findings, including the vulnerable function\
+          \ status to be included per CVE.\n\n## Output instructions\nOutput the text\
+          \ as a one line JSON string, properly escaped so that it will be possible\
+          \ to assign it to be a JSON value. \nFor example: \"# Dependabot Alert Verification\
+          \ Summary\\n\\n## Original Alert Details\\n\"\nDo not prefix the output\
+          \ string with ``` nor postfix with ```."
         autoTrim: false
-        supplementary: >-
-          ## Dependabot alerts
+        supplementary: '## Dependabot alerts
 
           {{result("get-latest-dependabot-alerts").records}}
 
 
           ## Matched monitored software components
 
-          {{result("find-matching-runtime-components") |
-          map(attribute='records') | list}}
+          {{result("find-matching-runtime-components") | map(attribute=''records'')
+          | list}}
 
 
           ## Matched vulnerabilities from Dynatrace RVA
 
-          {{result("find-matching-vulnerabilities") | map(attribute='records') |
-          list}}
+          {{result("find-matching-vulnerabilities") | map(attribute=''records'') |
+          list}}'
+      action: dynatrace.davis.copilot.workflow.actions:davis-copilot
+      active: true
       position:
         x: 0
         y: 3
-      predecessors:
-        - find-matching-runtime-components
-        - find-matching-vulnerabilities
       conditions:
         states:
           find-matching-vulnerabilities: OK
           find-matching-runtime-components: OK
+      description: Davis CoPilot Workflow Action Preview
+      predecessors:
+      - find-matching-runtime-components
+      - find-matching-vulnerabilities
     get-latest-dependabot-alerts:
       name: get-latest-dependabot-alerts
-      description: Make use of Dynatrace Grail data in your workflow.
-      action: dynatrace.automations:execute-dql-query
       input:
-        query: >-
-          fetch security.events, from:now()-7d
-
-          | filter event.type=="VULNERABILITY_FINDING"
-
-          | filter event.provider=="GitHub Advanced Security"
-
-          | filter dt.security.risk.level=="CRITICAL"
-
-          | summarize by: {component.name, artifact.path, artifact.repository},
-          {
-            finding.time.created=takeMax(toTimestamp(finding.time.created)), 
-            finding.ids=collectDistinct(finding.id),
-            CVEs=arrayDistinct(arrayFlatten(collectDistinct(vulnerability.references.cve)))
-          } 
+        query: "fetch security.events, from:now()-7d\n| filter event.type==\"VULNERABILITY_FINDING\"\
+          \n| filter event.provider==\"GitHub Advanced Security\"\n| filter dt.security.risk.level==\"\
+          CRITICAL\"\n| summarize by: {component.name, artifact.path, artifact.repository},\
+          \ {\n  finding.time.created=takeMax(toTimestamp(finding.time.created)),\
+          \ \n  finding.ids=collectDistinct(finding.id),\n  CVEs=arrayDistinct(arrayFlatten(collectDistinct(vulnerability.references.cve)))\n\
+          } "
+      action: dynatrace.automations:execute-dql-query
       position:
         x: 0
         y: 1
+      description: Make use of Dynatrace Grail data in your workflow.
       predecessors: []
+      customSampleResult:
+        records:
+        - CVEs:
+          - CVE-2026-27699
+          finding.ids:
+          - https://github.com/DynatraceAppSecDev/unguard/security/dependabot/1484
+          artifact.path: DynatraceAppSecDev/unguard/src/user-simulator/package-lock.json
+          component.name: basic-ftp
+          artifact.repository: DynatraceAppSecDev/unguard
+          finding.time.created: '2026-02-25T22:59:39.000000000Z'
+        - CVEs:
+          - CVE-2023-41419
+          finding.ids:
+          - https://github.com/DynatraceAppSecDev/unguard/security/dependabot/1501
+          artifact.path: DynatraceAppSecDev/unguard/requirements-04329506.txt
+          component.name: gevent
+          artifact.repository: DynatraceAppSecDev/unguard
+          finding.time.created: '2026-02-27T17:16:00.000000000Z'
+        - CVEs:
+          - CVE-2023-41419
+          finding.ids:
+          - https://github.com/DynatraceAppSecDev/unguard/security/dependabot/1476
+          artifact.path: DynatraceAppSecDev/unguard/requirements-15904603.txt
+          component.name: gevent
+          artifact.repository: DynatraceAppSecDev/unguard
+          finding.time.created: '2026-02-25T17:28:23.000000000Z'
+        - CVEs:
+          - CVE-2023-41419
+          finding.ids:
+          - https://github.com/DynatraceAppSecDev/unguard/security/dependabot/1553
+          artifact.path: DynatraceAppSecDev/unguard/requirements-21322493.txt
+          component.name: gevent
+          artifact.repository: DynatraceAppSecDev/unguard
+          finding.time.created: '2026-03-03T17:20:57.000000000Z'
+        - CVEs:
+          - CVE-2023-41419
+          finding.ids:
+          - https://github.com/DynatraceAppSecDev/unguard/security/dependabot/1463
+          artifact.path: DynatraceAppSecDev/unguard/requirements-29118742.txt
+          component.name: gevent
+          artifact.repository: DynatraceAppSecDev/unguard
+          finding.time.created: '2026-02-24T17:28:19.000000000Z'
+        - CVEs:
+          - CVE-2023-41419
+          finding.ids:
+          - https://github.com/DynatraceAppSecDev/unguard/security/dependabot/1520
+          artifact.path: DynatraceAppSecDev/unguard/requirements-45729903.txt
+          component.name: gevent
+          artifact.repository: DynatraceAppSecDev/unguard
+          finding.time.created: '2026-02-28T17:08:17.000000000Z'
+        - CVEs:
+          - CVE-2023-41419
+          finding.ids:
+          - https://github.com/DynatraceAppSecDev/unguard/security/dependabot/1531
+          artifact.path: DynatraceAppSecDev/unguard/requirements-70508417.txt
+          component.name: gevent
+          artifact.repository: DynatraceAppSecDev/unguard
+          finding.time.created: '2026-03-01T17:09:25.000000000Z'
+        - CVEs:
+          - CVE-2023-41419
+          finding.ids:
+          - https://github.com/DynatraceAppSecDev/unguard/security/dependabot/1490
+          artifact.path: DynatraceAppSecDev/unguard/requirements-92637425.txt
+          component.name: gevent
+          artifact.repository: DynatraceAppSecDev/unguard
+          finding.time.created: '2026-02-26T17:28:39.000000000Z'
+        - CVEs:
+          - CVE-2023-41419
+          finding.ids:
+          - https://github.com/DynatraceAppSecDev/unguard/security/dependabot/1542
+          artifact.path: DynatraceAppSecDev/unguard/requirements-99461086.txt
+          component.name: gevent
+          artifact.repository: DynatraceAppSecDev/unguard
+          finding.time.created: '2026-03-02T17:21:54.000000000Z'
+        - CVEs:
+          - null
+          finding.ids:
+          - https://github.com/DynatraceAppSecDev/unguard/security/dependabot/601
+          artifact.path: DynatraceAppSecDev/unguard/src/frontend-nextjs/package-lock.json
+          component.name: next
+          artifact.repository: DynatraceAppSecDev/unguard
+          finding.time.created: '2025-12-03T20:58:35.000000000Z'
     find-matching-vulnerabilities:
       name: find-matching-vulnerabilities
-      description: Make use of Dynatrace Grail data in your workflow.
-      action: dynatrace.automations:execute-dql-query
       input:
-        query: >-
-          fetch security.events, from:now()-2h
-
-          | filter event.type == "VULNERABILITY_STATE_REPORT_EVENT"
-
-          | filter event.level=="ENTITY"
-
-          | filter event.provider=="Dynatrace"
-
-          | parse """{{ _.vulnerable_component["CVEs"]  |
-          replace("'","\"")}}""", """JSON_ARRAY:vulnerabilities"""
-
-          | filter in(vulnerability.references.cve, vulnerabilities)
-
-          | expand workload.id=related_entities.kubernetes_workloads.ids
-
-          | join [
-            fetch dt.entity.container_group_instance
-            | fieldsAdd containerImageName, workload.id=belongs_to[dt.entity.cloud_application]
-            | filter contains(containerImageName,"{{_.vulnerable_component["artifact.repository"]}}")
-          ], on:{left[workload.id]==right[workload.id]},
-          fields:{container.id=id, container.name=entity.name,
-          container.image.name=containerImageName}
-
-          | filter isNotNull(container.id)
-
-          | summarize by:{dt.source_entity=affected_entity.id,
-          affected_entity.name,
-          security_risk=vulnerability.davis_assessment.level}, 
-
-          {
-           vulnerabilitiesCount=countDistinctExact(vulnerability.id),
-           vulnerabilities=collectDistinct(vulnerability.title),
-           CVEs=arrayDistinct(arrayFlatten(collectDistinct(vulnerability.references.cve))),
-           vulnerable_components=collectDistinct(affected_entity.vulnerable_component.package_name),
-           kubernetes_clusters=arrayDistinct(arrayFlatten(collectDistinct(related_entities.kubernetes_clusters.ids))),
-           kubernetes_workloads.ids=arrayDistinct(arrayFlatten(collectDistinct(related_entities.kubernetes_workloads.ids))),
-           kubernetes_workload.names=arrayDistinct(arrayFlatten(collectDistinct(related_entities.kubernetes_workloads.names))),
-           hosts=arrayDistinct(arrayFlatten(collectDistinct(related_entities.hosts.ids))),
-           services.ids=arrayDistinct(arrayFlatten(collectDistinct(related_entities.services.ids))),
-           services.names=arrayDistinct(arrayFlatten(collectDistinct(related_entities.services.names))),
-           reachable_data_assets=arrayDistinct(arrayFlatten(collectDistinct(affected_entity.reachable_data_assets.ids))),
-           vulnerable_function.status=arrayDistinct(arrayFlatten(collectDistinct(vulnerability.parent.davis_assessment.vulnerable_function_status)))
-          }
+        query: "fetch security.events, from:now()-2h\n| filter event.type == \"VULNERABILITY_STATE_REPORT_EVENT\"\
+          \n| filter event.level==\"ENTITY\"\n| filter event.provider==\"Dynatrace\"\
+          \n| parse \"\"\"{{ _.vulnerable_component[\"CVEs\"]  | replace(\"'\",\"\\\
+          \"\")}}\"\"\", \"\"\"JSON_ARRAY:vulnerabilities\"\"\"\n| filter in(vulnerability.references.cve,\
+          \ vulnerabilities)\n| expand workload.id=related_entities.kubernetes_workloads.ids\n\
+          | join [\n    smartscapeNodes CONTAINER\n    | filter contains(lower(container.image.name),lower(\"\
+          {{_.vulnerable_component[\"artifact.repository\"]}}\"))\n    | expand k8s.workload.id=coalesce(references[is_part_of.k8s_deployment],\n\
+          \                               coalesce(references[is_part_of.k8s_daemonset],\n\
+          \                                 coalesce(references[is_part_of.k8s_cronjob],\n\
+          \                                   coalesce(references[is_part_of.k8s_statefulset],\n\
+          \                                     coalesce(references[is_part_of.k8s_job],\n\
+          \                                       references[is_part_of.k8s_replicaset])))))\n\
+          \    | dedup k8s.workload.id\n    | lookup [\n      smartscapeNodes {K8S_DEPLOYMENT,\
+          \ K8S_CRONJOB, K8S_DAEMONSET, K8S_JOB, K8S_STATEFULSET, K8S_REPLICASET},\
+          \ from:now()-2h\n    ], sourceField:k8s.workload.id, lookupField:id, fields:{k8s.workload.id_classic=id_classic}\n\
+          ], on:{left[workload.id]==right[k8s.workload.id_classic]}, fields:{container.id=id,\
+          \ container.name=name, container.image.name}\n| summarize by:{dt.source_entity=affected_entity.id,\
+          \ affected_entity.name, security_risk=vulnerability.davis_assessment.level},\
+          \ \n{\n vulnerabilitiesCount=countDistinctExact(vulnerability.id),\n vulnerabilities=collectDistinct(vulnerability.title),\n\
+          \ CVEs=arrayDistinct(arrayFlatten(collectDistinct(vulnerability.references.cve))),\n\
+          \ vulnerable_components=collectDistinct(affected_entity.vulnerable_component.package_name),\n\
+          \ kubernetes_clusters=arrayDistinct(arrayFlatten(collectDistinct(related_entities.kubernetes_clusters.ids))),\n\
+          \ kubernetes_workloads.ids=arrayDistinct(arrayFlatten(collectDistinct(related_entities.kubernetes_workloads.ids))),\n\
+          \ kubernetes_workload.names=arrayDistinct(arrayFlatten(collectDistinct(related_entities.kubernetes_workloads.names))),\n\
+          \ hosts=arrayDistinct(arrayFlatten(collectDistinct(related_entities.hosts.ids))),\n\
+          \ services.ids=arrayDistinct(arrayFlatten(collectDistinct(related_entities.services.ids))),\n\
+          \ services.names=arrayDistinct(arrayFlatten(collectDistinct(related_entities.services.names))),\n\
+          \ reachable_data_assets=arrayDistinct(arrayFlatten(collectDistinct(affected_entity.reachable_data_assets.ids))),\n\
+          \ vulnerable_function.status=arrayDistinct(arrayFlatten(collectDistinct(vulnerability.parent.davis_assessment.vulnerable_function_status))),\n\
+          \ container_images=collectDistinct(container.image.name)\n}"
+      action: dynatrace.automations:execute-dql-query
       position:
         x: 1
         y: 2
-      predecessors:
-        - get-latest-dependabot-alerts
       conditions:
         custom: '{{result("get-latest-dependabot-alerts").records | length > 0}}'
         states:
           get-latest-dependabot-alerts: OK
+      withItems: vulnerable_component in {{result("get-latest-dependabot-alerts").records}}
       concurrency: 3
-      withItems: vulnerable_component in
-        {{result("get-latest-dependabot-alerts").records}}
+      description: Make use of Dynatrace Grail data in your workflow.
+      predecessors:
+      - get-latest-dependabot-alerts
     create-and-assign-github-issue:
       name: create-and-assign-github-issue
-      description: Modularize your workflows, run any existing workflow.
-      action: dynatrace.automations:run-workflow
-      active: false
       input:
-        workflowId: 59468958-8b94-4cf5-a8cf-cce256cc54ef
-        workflowInput: >-
-          {
-            "content": {{result("verify-dependabot-alert")["text"]}},
-            "title": "Verified {{result("get-latest-dependabot-alerts").records | length}} Dependabot alerts with Dynatrace"
-          }
+        workflowInput: "{\n  \"content\": {{result(\"verify-dependabot-alert\")[\"\
+          text\"]}},\n  \"title\": \"Verified {{result(\"get-latest-dependabot-alerts\"\
+          ).records | length}} Dependabot alerts with Dynatrace\"\n}"
+      action: dynatrace.automations:run-workflow
+      active: true
       position:
         x: 0
         y: 4
-      predecessors:
-        - verify-dependabot-alert
       conditions:
         states:
           verify-dependabot-alert: OK
+      description: Modularize your workflows, run any existing workflow.
+      predecessors:
+      - verify-dependabot-alert
     find-matching-runtime-components:
       name: find-matching-runtime-components
-      description: Make use of Dynatrace Grail data in your workflow.
-      action: dynatrace.automations:execute-dql-query
       input:
-        query: |-
-          fetch dt.entity.software_component, from:now()-2h
-          | fieldsAdd component.package.type=softwareComponentType, component.package.version=softwareComponentVersion, component.package.name=lower(packageName)
-          | filter contains(lower(component.package.name),lower("{{_.vulnerable_component["component.name"]}}"))
-          | fieldsAdd process.id=belongs_to[dt.entity.process_group_instance] 
-          | expand process.id=process.id
-          | join [
-            fetch dt.entity.process_group_instance
-              | fieldsAdd software_components=contains[dt.entity.software_component], container.id=belongs_to[dt.entity.container_group_instance]
-              | expand software_component.id=software_components
-              | fieldsRemove software_components
-              | filterOut isNull(software_component.id)
-          ], kind:inner, on:{left[id]==right[software_component.id]}, fields:{container.id}
-          | lookup [
-              fetch dt.entity.container_group_instance
-              | filter contains(containerImageName,"{{_.vulnerable_component["artifact.repository"]}}")
-              | fieldsAdd workload.id=belongs_to[dt.entity.cloud_application]
-          ], sourceField:container.id, lookupField:id, fields:{container.name=entity.name, container.image.name=containerImageName, workload.id, workload.name=workloadName}
+        query: "fetch dt.entity.software_component, from:now()-2h\n| fieldsAdd component.package.type=softwareComponentType,\
+          \ component.package.version=softwareComponentVersion, component.package.name=lower(packageName)\n\
+          | filter contains(lower(component.package.name),lower(\"{{_.vulnerable_component[\"\
+          component.name\"]}}\"))\n| fieldsAdd process.id=belongs_to[dt.entity.process_group_instance]\
+          \ \n| expand process.id=process.id\n| join [\n  fetch dt.entity.process_group_instance\n\
+          \    | fieldsAdd software_components=contains[dt.entity.software_component],\
+          \ container.id=belongs_to[dt.entity.container_group_instance]\n    | expand\
+          \ software_component.id=software_components\n    | fieldsRemove software_components\n\
+          \    | filterOut isNull(software_component.id)\n], kind:inner, on:{left[id]==right[software_component.id]},\
+          \ fields:{container.id}\n| lookup [\n    fetch dt.entity.container_group_instance\n\
+          \    | filter contains(containerImageName,\"{{_.vulnerable_component[\"\
+          artifact.repository\"]}}\")\n    | fieldsAdd workload.id=belongs_to[dt.entity.cloud_application]\n\
+          ], sourceField:container.id, lookupField:id, fields:{container.name=entity.name,\
+          \ container.image.name=containerImageName, workload.id, workload.name=workloadName}"
+      action: dynatrace.automations:execute-dql-query
       position:
         x: -1
         y: 2
-      predecessors:
-        - get-latest-dependabot-alerts
       conditions:
         custom: '{{result("get-latest-dependabot-alerts").records | length > 0}}'
         states:
           get-latest-dependabot-alerts: OK
+      withItems: vulnerable_component in {{result("get-latest-dependabot-alerts").records}}
       concurrency: 3
-      withItems: vulnerable_component in
-        {{result("get-latest-dependabot-alerts").records}}
-  description: ""
-  trigger:
-    schedule:
-      rule: null
-      trigger:
-        type: interval
-        intervalMinutes: 180
-      timezone: Europe/Vienna
-      isActive: false
-      isFaulty: false
-      filterParameters:
-        earliestStart: 2025-11-12
-        earliestStartTime: 12:09
-      inputs: {}
-  schemaVersion: 3
-  result: null
-  input: {}
-  hourlyExecutionLimit: 1000
-  guide: null
-  type: STANDARD
+      description: Make use of Dynatrace Grail data in your workflow.
+      predecessors:
+      - get-latest-dependabot-alerts
