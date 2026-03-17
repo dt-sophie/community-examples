@@ -21,7 +21,7 @@ This blueprint includes configurations for the following components:
 
 | Component | Description |
 |---|---|
-| **Dashboards** | Pipeline task and failure details, test execution breakdowns, and artifact flow visualizations |
+| **Dashboards** | Pipeline task and failure details and artifact flow visualizations |
 | **Workflows** | Automated retrieval of build and deployment metrics from CI/CD tool APIs (Jenkins, Azure DevOps, GitLab) |
 | **OpenTelemetry Config** | Collector setup for streaming real-time metrics, traces, and logs from your pipelines into Dynatrace |
 | **SDLC Event Ingestion** | Pipeline configurations to push build lifecycle events (start, success, failure) to Dynatrace via the SDLC Events API |
