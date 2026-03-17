@@ -1,87 +1,83 @@
-# CI/CD Pipeline Observability Blueprint
+# GitLab Pipeline Metrics Collection using OpenTelemetry Collector
 
-This blueprint provides **end-to-end observability for your CI/CD pipelines** — from build and test execution to artifact promotion and deployment — built with Dynatrace Dashboards, Workflows, and OpenTelemetry integrations.
+This setup collects GitLab pipeline metrics from an on-premises GitLab instance using the OpenTelemetry (OTel) Collector, configured to scrape Prometheus endpoints and export data to Dynatrace.
 
-<!-- Add screenshots here -->
+## Prerequisites
 
-## 🎯 Purpose
+- [Dynatrace Collector](https://docs.dynatrace.com/docs/shortlink/otel-collector) access on your gitlab server.
+- A [Dynatrace tenant](https://www.dynatrace.com/) with an API token that includes the `metrics.ingest` scope.
 
-CI/CD pipelines can feel like black boxes. This blueprint helps you answer the questions that matter most:
+## Configuration
 
-- **Where is my pipeline right now, and why is it slow or unstable?**
-- **Which tests are flaky and delaying releases?**
-- **How fast can artifacts reach production?**
-- **Which phase is slowing down my delivery?**
+This configuration file scrapes the gitlab pipeline metrics from two endpoints:
 
-By combining distributed tracing, metrics, and SDLC event ingestion, this blueprint gives teams real-time visibility across every stage of the software delivery lifecycle.
+1. `host.docker.internal:9090` at `/metrics`
+2. `localhost:8080` at `/-/metrics`
 
-## 📦 What's Inside
+### Configuration File
 
-This blueprint includes configurations for the following components:
+Create a configuration file (e.g., `otel-config.yaml`) with the following content:
 
-| Component | Description |
-|---|---|
-| **Dashboards** | Pipeline task and failure details, test execution breakdowns, and artifact flow visualizations |
-| **Workflows** | Automated retrieval of build and deployment metrics from CI/CD tool APIs (Jenkins, Azure DevOps, GitLab) |
-| **OpenTelemetry Config** | Collector setup for streaming real-time metrics, traces, and logs from your pipelines into Dynatrace |
-| **SDLC Event Ingestion** | Pipeline configurations to push build lifecycle events (start, success, failure) to Dynatrace via the SDLC Events API |
-| **Documentation** | Setup guides and customization tips for each component |
+```yaml
+receivers:
+  prometheus:
+    config:
+      scrape_configs:
+      - job_name: 'gitlab-metrics-9090'
+        scrape_interval: 10s
+        static_configs:
+        - targets: ['host.docker.internal:9090']
+        metrics_path: '/metrics'
+      - job_name: 'gitlab-metrics-8080'
+        scrape_interval: 10s
+        static_configs:
+        - targets: ['localhost:8080']
+        metrics_path: '/-/metrics'
 
-## 📊 What You'll Get
+processors:
+  cumulativetodelta:
 
-Once deployed, this blueprint surfaces observability data across several key areas:
+exporters:
+  otlphttp:
+    endpoint: "https://<YOUR_TENANT_ID>.live.dynatrace.com/api/v2/otlp"
+    headers:
+      Authorization: "Api-Token dt0c01.<YOUR_API_TOKEN>"
 
-- **Pipeline status overview** – execution status and error-prone task identification across pipeline runs
-- **Test execution breakdown** – per-test-case metrics to identify flaky tests by tracking failure rates and execution patterns
-- **Span & log drill-down** – context-aware end-to-end visibility from the originating endpoint down to underlying logs and exception traces
-- **Artifact flow timeline** – end-to-end time from commit to deployment, visualized as pipeline traces
-- **Predictive anomaly alerts** – proactive notifications of potential delays before they impact your release cycle
+service:
+  pipelines:
+    metrics:
+      receivers: [prometheus]
+      processors: [cumulativetodelta]
+      exporters: [otlphttp]
+```
 
-## ⚙️ Getting Started
+## Usage
 
-This blueprint supports three instrumentation approaches. Choose the one that fits your setup:
+1. Save the configuration file (`otel_config.yaml`) in the same directory where you’ll run the Dynatrace Collector.  
 
-### Option 1: OpenTelemetry (recommended for full observability)
+2. Start the Dynatrace Collector as a Docker container with the following command:
 
-Instrument your CI/CD pipeline to stream real-time metrics, traces, and logs into Dynatrace via the Dynatrace Collector.
+   ```bash
+   docker run --rm \
+     --name dt-otelcol \
+     --network host \
+     --env DT_ENDPOINT=https://<YOUR_TENANT_ID>.live.dynatrace.com/api/v2/otlp \
+     --env API_TOKEN=<YOUR_API_TOKEN> \
+     -p 4317:4317 \
+     -v $(pwd)/otel-collector-config.yaml:/etc/otelcol/otel-collector-config.yaml \
+     ghcr.io/dynatrace/dynatrace-otel-collector/dynatrace-otel-collector:latest \
+     --config /etc/otelcol/otel-collector-config.yaml
+    ```
 
-1. Deploy the **Dynatrace Collector** in your environment.
-2. Instrument your pipeline using the provided OpenTelemetry configuration:
-   - `otel-jenkins/` – for Jenkins pipelines
-   - `otel-gitlab/` – for GitLab pipelines
-   - `otel-github-actions/` – for GitHub Actions
-3. Verify data is flowing into Dynatrace under **Distributed Traces**.
-4. Import the included dashboard JSON files via the **Dashboards app**.
+> **Note**:  
+> Replace `<YOUR_TENANT_ID>` with your actual Dynatrace tenant ID.  
+> Replace `<YOUR_API_TOKEN>` with your Dynatrace API token that includes the `metrics.ingest` scope.
 
-### Option 2: Dynatrace Workflows (no pipeline changes required)
+# Alternative Approach (with no prometheus running on on premises)  
+To run the prometheus-exporters along with Dynatrace Collector,replace the API-token and tenant within **docker-compose.yaml** and replace the gitlab token within **gitlab-ci-pipelines-exporter.yml**.
+Once completed, run the following command:  
+```
+docker-compose up
+```
 
-Use Dynatrace Workflows to periodically pull build and deployment metrics from your CI/CD tool APIs — no instrumentation needed.
 
-1. Import the relevant workflow JSON from the `workflows/` folder:
-   - `workflow-jenkins.json`
-   - `workflow-azure-devops.json`
-   - `workflow-gitlab.json`
-2. Configure your CI/CD API credentials in the workflow connection settings.
-3. Import the matching dashboard JSON from the `dashboards/` folder.
-4. Run the workflow manually once to verify data ingestion, then enable the schedule.
-
-### Option 3: SDLC Event Ingestion
-
-Configure your CI/CD tools to push lifecycle events (build start, success, failure) directly to Dynatrace via the **SDLC Events API** or via **OpenPipeline** from pipeline logs.
-
-1. Follow the setup guide in `sdlc-events/README.md`.
-2. Use the provided DQL queries to analyze event patterns and trigger alerts.
-3. Import the included dashboard to visualize SDLC event timelines.
-
-## 🔧 Customization Tips
-
-- **Filter by pipeline or project** – adjust the dashboard variable filters to scope views to specific repositories, environments, or teams.
-- **Adjust alerting thresholds** – the included metric events are pre-configured with default thresholds; tune these to match your SLA requirements.
-- **Extend with additional tools** – the OpenTelemetry and workflow configurations can be adapted to other CI/CD platforms that expose APIs or support OTel instrumentation.
-
-## 📚 Further Reading
-
-- [Blog post: Unlocking CI/CD success with observability](https://www.dynatrace.com/news/blog/) *(link to published post)*
-- [Dynatrace OpenPipeline documentation](https://docs.dynatrace.com/docs)
-- [SDLC Events API reference](https://docs.dynatrace.com/docs)
-- [Dynatrace Workflows documentation](https://docs.dynatrace.com/docs)
