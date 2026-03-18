@@ -1,0 +1,68 @@
+Enabled capabilities
+Commitment period
+11. Apr. 2023 - 10. Apr. 2026
+
+Deployment type
+All
+
+Collapse all
+AppEngine Functions
+
+Name	Deployment Type	Unit price (USD)	Unit of measure
+AppEngine Functions - Small	SaaS	1,000.00	Per 1,000,000 invocations
+Automation
+
+Name	Deployment Type	Unit price (USD)	Unit of measure
+Automation Workflow	SaaS	1,370.00	Per 10,000 workflow-hours
+Digital Experience Monitoring
+
+Name	Deployment Type	Unit price (USD)	Unit of measure
+Browser Monitor or Clickpath	SaaS	1,200.00	Per 100,000 synthetic actions
+HTTP Monitor	SaaS	133.60	Per 100,000 synthetic requests
+Real User Monitoring	SaaS	300.00	Per 100,000 sessions
+Real User Monitoring Property	SaaS	10.00	Per 100,000 properties per session
+Real User Monitoring with Session Replay	SaaS	1,200.00	Per 100,000 session replay captures
+Third-Party Synthetic API Ingestion	SaaS	133.60	Per 100,000 third-party synthetic results
+Platform Extensions
+
+Name	Deployment Type	Unit price (USD)	Unit of measure
+Custom Events Classic	SaaS	200.00	Per 100,000,000 custom events
+Custom Metrics Classic	SaaS	200.00	Per 100,000,000 metric data points
+Custom Traces Classic	SaaS	140.00	Per 100,000,000 spans
+Log Monitoring Classic	SaaS	100.00	Per 100,000,000 log records
+Serverless Functions Classic	SaaS	400.00	Per 100,000,000 invocations
+Events powered by Grail
+
+Name	Deployment Type	Unit price (USD)	Unit of measure
+Events - Ingest & Process	SaaS	2,000.00	Per 10,000 gibibytes
+Events - Query	SaaS	3,500.00	Per 1,000,000 gibibytes-scanned
+Events - Retain	SaaS	700.00	Per 1,000,000 gibibyte-days
+Host Monitoring
+
+Name	Deployment Type	Unit price (USD)	Unit of measure
+Foundation & Discovery	SaaS	1,000.00	Per 100,000 host-hours
+Full-Stack Monitoring	SaaS	1,000.00	Per 100,000 memory-gibibyte-hours
+Infrastructure Monitoring	SaaS	4,000.00	Per 100,000 host-hours
+Mainframe Monitoring	SaaS	1,000.00	Per 10,000 MSU-hours
+Container Monitoring
+
+Name	Deployment Type	Unit price (USD)	Unit of measure
+Kubernetes Platform Monitoring	SaaS	200.00	Per 100,000 pod-hours
+Logs powered by Grail
+
+Name	Deployment Type	Unit price (USD)	Unit of measure
+Log Management & Analytics - Ingest & Process	SaaS	2,000.00	Per 10,000 gibibytes
+Log Management & Analytics - Query	SaaS	3,500.00	Per 1,000,000 gibibytes-scanned
+Log Management & Analytics - Retain	SaaS	700.00	Per 1,000,000 gibibyte-days
+Log Management & Analytics - Retain with Included Queries	SaaS	1.00	Per 1,000,000 gibibyte-days
+Application Security Protection
+
+Name	Deployment Type	Unit price (USD)	Unit of measure
+Runtime Application Protection	SaaS	225.00	Per 100,000 memory-gibibyte-hours
+Runtime Vulnerability Analytics	SaaS	225.00	Per 100,000 memory-gibibyte-hours
+Traces powered by Grail
+
+Name	Deployment Type	Unit price (USD)	Unit of measure
+Traces - Ingest & Process	SaaS	1.00	Per 10,000 gibibytes
+Traces - Query	SaaS	1.00	Per 1,000,000 gibibytes-scanned
+Traces - Retain	SaaS	1.00	Per 1,000,000 gibibyte-days

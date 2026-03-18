@@ -1,4 +1,4 @@
-# DPS Cost Allocation Dashboard
+# DPS Cost Allocation Dashboard v3.8
 
 ## Overview
 **Understand your costs. Stay in control.**
@@ -20,7 +20,7 @@ Before using the Cost Allocation Dashboard, make sure you have configured [Dynat
 
 For questions and support, join the conversation in the [Dynatrace Community](https://community.dynatrace.com/t5/DPS-Cost-Allocation/).
 
-<img width="1919" height="1199" alt="Screenshot 1" src="https://github.com/user-attachments/assets/771353df-2f85-4334-92da-e352c52a6346" />
+<img width="1919" height="1199" alt="Screenshot" src="https://github.com/user-attachments/assets/771353df-2f85-4334-92da-e352c52a6346" />
 
 ---
 
@@ -63,11 +63,54 @@ Before you begin, ensure you have:
    - Click on **Import dashboard** and upload the downloaded JSON file.
 
 3. **Adjust Variables:**
-   - Ensure the `ratecard_data` variable is correctly configured. You can either set it up with values from your Dynatrace subscription or define the rate card for your internal customers.
+   - Configure the `price_points` variable with a JSON array that maps each capability key to its unit price. See [Configuring the `price_points` Variable](#%EF%B8%8F-configuring-the-price_points-variable) below for details.
    - Modify the namespace and cluster filters if your environment differs.
 
 4. **Share and Explore:**
    - Share the dashboard with your team and start analyzing your cost data.
+
+---
+
+## ⚙️ Configuring the `price_points` Variable
+
+The `price_points` variable holds a JSON array that maps each Dynatrace capability to its unit price. It drives all cost calculations in the dashboard.
+
+Each entry looks like this:
+
+```json
+[
+  {
+    "key": "FULLSTACK_MONITORING",
+    "name": "Full-Stack Monitoring",
+    "price": "800",
+    "Category": "Application and Infrastructure Observability",
+    "unitName": "memory-gibibyte-hours",
+    "priceUnit": "100000",
+    "currencyCode": "USD"
+  },
+  ...
+]
+```
+
+### Option A — Generate from your Account Management Portal (recommended)
+
+Use the included `convert-ratecard.js` script to produce the JSON automatically from your contract rate card:
+
+1. Log in to your **Dynatrace Account Management Portal** and navigate to the rate card section. See `pricing-page.png` in this folder for the expected page layout.
+2. Select and copy the full rate card table text.
+3. Paste it into `AMP-ratecard.txt` (replacing any existing content), keeping the tab-separated format with four columns: **Name**, **Deployment Type**, **Unit price**, **Unit of measure**.
+4. Run the converter:
+   ```bash
+   node convert-ratecard.js
+   ```
+   This writes the result to `price-point.json` in the same folder.
+5. Copy the contents of `price-point.json` and paste it as the default value of the `price_points` variable in the dashboard.
+
+> **Note:** The script automatically detects the currency code, price, and price units. After generating the file, review and adjust the `price` and `priceUnit` fields in `price-point.json` to match your actual contract rates before pasting into the dashboard.
+
+### Option B — Edit manually
+
+Open the dashboard, navigate to the `price_points` variable, and edit the JSON array directly. Adjust the `price`, `priceUnit`, and `currencyCode` fields to match your contract rates.
 
 ---
 
