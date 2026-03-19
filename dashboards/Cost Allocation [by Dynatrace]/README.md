@@ -56,12 +56,17 @@ Before you begin, ensure you have:
 
 ### Installation Steps
 1. **Download the JSON File**  
-   - [Standard version](DPS%20Cost%20Allocation%20Overview%20Dashboard%20v3.8.json)
-   - [With Query, Workflow & Functions support](DPS%20Cost%20Allocation%20Overview%20Dashboard%20v3.8%20w%20Query%2C%20Workflow%2C%20Functions%20support.json)
+   Choose the version that fits your needs:
+   - [Standard version](DPS%20Cost%20Allocation%20Overview%20Dashboard%20v3.8.json) — cost overview by capability and cost center, no additional setup required.
+   - [With Query, Workflow & Functions support](DPS%20Cost%20Allocation%20Overview%20Dashboard%20v3.8%20w%20Query%2C%20Workflow%2C%20Functions%20support.json) & [Helper Notebook](Notebook%20helper/Cost%20Allocation%20with%20Lookup%20Tables%20Notebook%20v3.6.json) — additionally maps individual users to cost centers or products via a lookup table. Requires setting up a notebook and a workflow.
 
 2. **Import the Dashboard:**
    - Open the **Dashboards** app in your Dynatrace environment.
    - Click on **Import dashboard** and upload the downloaded JSON file.
+   - **If you downloaded the version with Query, Workflow & Functions support**, also import the helper notebook:
+     - Open the **Notebooks** app in your Dynatrace environment.
+     - Click on **Import notebook** and upload the helper notebook JSON file.
+     - Follow the instructions at the top of the notebook to create a lookup table that maps users to a cost center or product.
 
 3. **Adjust Variables:**
    - Configure the `price_points` variable with a JSON array that maps each capability key to its unit price. See [Configuring the `price_points` Variable](#%EF%B8%8F-configuring-the-price_points-variable) below for details.
