@@ -56,8 +56,8 @@ Before you begin, ensure you have:
 
 ### Installation Steps
 1. **Download the JSON File**  
-   [Download standard version here]DPS Cost Allocation Overview Dashboard v3.8 w Query, Workflow, Functions support (1).json
-   [Download support for Query/Workflow/Function here](DPS Cost Allocation Overview Dashboard v3.8 w Query, Workflow, Functions support (1).json)
+   - [Standard version](DPS%20Cost%20Allocation%20Overview%20Dashboard%20v3.8.json)
+   - [With Query, Workflow & Functions support](DPS%20Cost%20Allocation%20Overview%20Dashboard%20v3.8%20w%20Query%2C%20Workflow%2C%20Functions%20support.json)
 
 2. **Import the Dashboard:**
    - Open the **Dashboards** app in your Dynatrace environment.
