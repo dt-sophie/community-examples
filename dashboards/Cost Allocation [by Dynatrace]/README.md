@@ -16,9 +16,9 @@ Whether you're showing costs back to teams or investigating optimization opportu
 
 **Simple. Transparent. Secure.**
 
-Before using the Cost Allocation Dashboard, make sure you have configured [Dynatrace Cost Allocation](https://community.dynatrace.com/t5/DPS-Cost-Allocation/).
+Before using the Cost Allocation Dashboard, make sure you have configured [Dynatrace Cost Allocation](https://docs.dynatrace.com/docs/license/cost-allocation).
 
-For questions and support, join the conversation in the [Dynatrace Community](https://community.dynatrace.com/t5/DPS-Cost-Allocation/).
+For questions and support, join the conversation in the [Dynatrace Community](https://community.dynatrace.com/t5/DPS-Cost-Allocation/gh-p/DPSCostAllocationpublic).
 
 <img width="1919" height="1199" alt="Screenshot" src="https://github.com/user-attachments/assets/771353df-2f85-4334-92da-e352c52a6346" />
 
