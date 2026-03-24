@@ -121,7 +121,7 @@ Open the dashboard, navigate to the `price_points` variable, and edit the JSON a
 ---
 
 ## 🛠️ Support
-For additional help, visit the [Dynatrace Community](https://community.dynatrace.com/t5/DPS-Cost-Allocation/).
+For additional help, visit the [Dynatrace Community](https://community.dynatrace.com/t5/DPS-Cost-Allocation/gh-p/DPSCostAllocationpublic).
 
 ---
 
